@@ -1,0 +1,14 @@
+#farmer{
+    cursor: url(wheatcursor.png), auto;
+}
+#buyer{
+    cursor: url(pencursor.png), auto;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+.antButton:hover{
+    cursor: pointer;
+}
