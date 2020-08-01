@@ -1,17 +1,13 @@
 package com.example.agri.pojos;
 
-import java.util.List;
-
 public class Farmers {
-    List<Crops> myCrops;
     String Id;
     String AadhaarNo, MobNo, Email;
 
     public Farmers() {
     }
 
-    public Farmers(List<Crops> myCrops, String id, String aadhaarNo, String mobNo, String email) {
-        this.myCrops = myCrops;
+    public Farmers(String id, String aadhaarNo, String mobNo, String email) {
         Id = id;
         AadhaarNo = aadhaarNo;
         MobNo = mobNo;
@@ -40,14 +36,6 @@ public class Farmers {
 
     public void setEmail(String email) {
         Email = email;
-    }
-
-    public List<Crops> getMyCrops() {
-        return myCrops;
-    }
-
-    public void setMyCrops(List<Crops> myCrops) {
-        this.myCrops = myCrops;
     }
 
     public String getId() {

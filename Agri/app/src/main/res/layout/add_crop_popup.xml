@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/chooseLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/add_crop"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/cropname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Crop Name" />
+
+    <EditText
+        android:id="@+id/totalQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Total Quantity"
+        android:inputType="numberDecimal" />
+
+    <!-->TODO: Add crop organic or not and delivered optical effects <!-->
+
+    <EditText
+        android:id="@+id/expectedDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date"
+        android:inputType="date" />
+
+    <Button
+        android:id="@+id/add_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add" />
+
+</LinearLayout>
