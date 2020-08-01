@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
-
+  const [fname,lname,email,password,govt] = useState("","","","",false)
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -58,6 +58,7 @@ export default function SignUp() {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                onChange={(e) => {this.setState({fname:e.target.textContent})}}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -69,6 +70,7 @@ export default function SignUp() {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                onChange={(e) => {this.setState({lname:e.target.textContent})}}
               />
             </Grid>
             <Grid item xs={12}>
@@ -80,6 +82,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={(e) => {this.setState({email:e.target.textContent})}}
               />
             </Grid>
             <Grid item xs={12}>
@@ -96,8 +99,9 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
+                onChange={(e) => alert(this.state.email)}
                 control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to recieve agri brochures via email."
+                label="I am a Govt. of India employee."
               />
             </Grid>
           </Grid>
