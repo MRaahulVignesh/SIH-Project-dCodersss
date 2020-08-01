@@ -8,99 +8,41 @@ import { SearchOutlined } from '@ant-design/icons';
 const data = [
     {
       key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
+      name: 'Ram Kumar',
+      date:'1 August 2020', 
+      loc:'Gorakhpur, UP', 
+      paym:'PAYTM', 
+      amt:312.44
     },
     {
       key: '2',
-      name: 'Joe Black',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
+      date:'30 July 2020', 
+      name:'Kamlesh Khanna', 
+      loc:'Chennai, TN', 
+      paym:'PAYTM', 
+      amt:866.99
+    },{
       key: '3',
-      name: 'Jim Green',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
+      date:'29 July 2020', 
+      name:'Pradeep Kumar', 
+      loc:'Trichy, TN', 
+      paym:'ONLINE SBI', 
+      amt:100.81
+    },{
       key: '4',
-      name: 'Jim Red',
-      age: 32,
-      address: 'London No. 2 Lake Park',
+      date:'26 July 2020', 
+      name:'Nikhil Sebastian', 
+      loc:'Cochin, KL', 
+      paym:'GPAY', 
+      amt:654.39
+    },{
+      key: '5',
+      date:'19 July 2020', 
+      name:'Maha Fatheema', 
+      loc:'Mumbai, MH', 
+      paym:'ONLINE SBI', 
+      amt:212.79
     },
-    {
-        key: '5',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-      },
-      {
-        key: '6',
-        name: 'Joe Black',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-      },
-      {
-        key: '7',
-        name: 'Jim Green',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-      },
-      {
-        key: '8',
-        name: 'Jim Red',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-      },{
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-      },
-      {
-        key: '2',
-        name: 'Joe Black',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-      },
-      {
-        key: '3',
-        name: 'Jim Green',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-      },
-      {
-        key: '4',
-        name: 'Jim Red',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-      },
-      {
-          key: '5',
-          name: 'John Brown',
-          age: 32,
-          address: 'New York No. 1 Lake Park',
-        },
-        {
-          key: '6',
-          name: 'Joe Black',
-          age: 42,
-          address: 'London No. 1 Lake Park',
-        },
-        {
-          key: '7',
-          name: 'Jim Green',
-          age: 32,
-          address: 'Sidney No. 1 Lake Park',
-        },
-        {
-          key: '8',
-          name: 'Jim Red',
-          age: 32,
-          address: 'London No. 2 Lake Park',
-        },
 ];
 
 class CompanyTransaction extends Component{
@@ -183,24 +125,39 @@ class CompanyTransaction extends Component{
     render(){
         const columns = [
             {
+              title: 'Date',
+              dataIndex: 'date',
+              key: 'date',
+              width: '30%',
+              ...this.getColumnSearchProps('date'),
+            },
+            {
               title: 'Name',
               dataIndex: 'name',
               key: 'name',
-              width: '30%',
+              width: '20%',
               ...this.getColumnSearchProps('name'),
             },
             {
-              title: 'Age',
-              dataIndex: 'age',
-              key: 'age',
+              title: 'location',
+              dataIndex: 'loc',
+              key: 'loc',
               width: '20%',
-              ...this.getColumnSearchProps('age'),
+              ...this.getColumnSearchProps('loc'),
             },
             {
-              title: 'Address',
-              dataIndex: 'address',
-              key: 'address',
-              ...this.getColumnSearchProps('address'),
+              title: 'Payment Method',
+              dataIndex: 'paym',
+              key: 'paym',
+              width: '40%',
+              ...this.getColumnSearchProps('paym'),
+            },
+            {
+              title: 'Amount',
+              dataIndex: 'amt',
+              key: 'amt',
+              width: '20%',
+              ...this.getColumnSearchProps('amt'),
             },
         ];
         return(
@@ -217,26 +174,6 @@ class CompanyTransaction extends Component{
                     <div id="transactions">
                         <Table     pagination={{ defaultPageSize: 5, showSizeChanger: true, pageSizeOptions: ['5', '10', '20']}} columns={columns} dataSource={data} />
                     </div>
-                </div>
-                <div id="menu" style={{display:"inline-block",backgroundColor:"lightgreen",width:"8.75vw",height:"100vh"
-                                        ,verticalAlign:"top"}}>
-                            <Modal
-                                title="Vertically centered modal dialog"
-                                centered
-                                visible={this.state.modalVisible}
-                                onOk={() => this.setModalVisible(false)}
-                                onCancel={() => this.setModalVisible(false)}
-                                >
-                                <p>some contents...</p>
-                                <p>some contents...</p>
-                                <p>some contents...</p>
-                            </Modal>
-                        <Button className="antButton" type="text"  style={{display:"block",margin:"auto",marginTop:"5vh",fontSize:"3vh",fontFamily:"'Courier New', Courier, monospace"}}
-                                onClick={(e)=>{this.showDialog(e)}}>Aim</Button>
-                        <Button className="antButton"type="text"  style={{display:"block",margin:"auto",marginTop:"5vh",fontSize:"3vh",fontFamily:"'Courier New', Courier, monospace"}}
-                                onClick={(e)=>{this.showDialog(e)}}>How?</Button>
-                        <Button className="antButton" type="text"  style={{display:"block",margin:"auto",marginTop:"5vh",fontSize:"3vh",fontFamily:"'Courier New', Courier, monospace",overflow:"hidden"}}
-                                onClick={(e)=>{this.showDialog(e)}}>Schemes</Button>
                 </div>
             </div>
         )

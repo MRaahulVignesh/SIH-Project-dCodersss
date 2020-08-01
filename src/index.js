@@ -9,17 +9,23 @@ import Main from './Main/Main';
 import Crop from './Main/Components/Crop';
 import FarmerTransaction from './Main/Components/FarmerTransaction';
 import CompanyTransaction from './Main/Components/CompanyTransaction';
+import CompanyDashboard from './Main/Dashboard/CompanyDashboard';
+import SignInSide from './Main/Components/Register/SignInSide';
+import SignUp from './Main/Components/Register/SignUp';
 
 ReactDOM.render(
   <React.StrictMode>
      <BrowserRouter>
               <Switch>
+                <Route path="/register" component={SignUp} />
+                <Route path="/login" component={SignInSide} />
                 <Route path="/farmertransaction" component={FarmerTransaction} />
                 <Route path="/companytransaction" component={CompanyTransaction} />
                 <Route path="/companyTransaction" component={Intro} />
                 <Route path="/intro" component={Intro} />
                 <Route path="/crop" component={Crop} />
                 <Route path="/main" component={Main} />
+                <Route path="/companydashboard" component={CompanyDashboard} />
                 <Route path="/" component={Intro} />
               </Switch>
     </BrowserRouter>

@@ -5,15 +5,18 @@ import "antd/dist/antd.css";
 import Ticker from 'react-ticker'
 import farmerIntro from './farmerintro.png'
 import businessintro from './businessintro.png'
+import Carousel from 'react-material-ui-carousel'
+import Item from './Item.js'
+
 class Intro extends Component{
     state = {
         modalVisible: false
     }
     login = (e) => {
-        alert("hey")
+        this.props.history.push(`/login`)
     }
     register = (e) => {
-        alert("hey")
+        this.props.history.push(`/register`)
     }
     showDialog = (e) => {
         this.setState({modalVisible:true})
@@ -21,36 +24,29 @@ class Intro extends Component{
     setModalVisible(modalVisible) {
         this.setState({ modalVisible });
     }
+    
     render(){
+        var items = [
+            {
+                name: "Welcome",
+                description: "We are here to provide you with the Best Agri products at Best Rates",
+                imgSrc: "./businessintro.png"
+            },
+            {
+                name: "Click on the menu to know more",
+                imgSrc: "./farmerintro.png"
+            }
+        ]
         return(
-            <div>
-                <Ticker direction="toRight" height="30">
+            <div id="intro">
+                <Ticker direction="toRight" height="25">
                     {({ index }) => (
                         <>
-                            <h2>This is the Headline of element #{index}!</h2>
-                            <img src="www.my-image-source.com/" alt=""/>
+                            <h3 style={{marginLeft:"7px"}}>{index+1}:300 more entries recently </h3>
                         </>
                     )}
                 </Ticker>
-                <div id="farmer" style={{display:"inline-block",backgroundColor:"lightgoldenrodyellow",width:"45vw",height:"100vh"
-                                        ,verticalAlign:"top"}}>
-                    <Button type="dashed" shape="round" style={{display:"flex",position:"absolute",left:"18vw",top:"15.5vh"}}
-                            onClick={(e)=>{this.login(e)}}>Login</Button>
-                    <img src={farmerIntro} 
-                        style={{maxHeight:"25vh",maxWidth:"25vw",display:"flex",position:"absolute",left:"15vw",top:"35.5vh"}}/>
-                    <Button type="dashed" shape="round" style={{display:"flex",position:"absolute",left:"17.75vw",bottom:"15.5vh"}}
-                            onClick={(e)=>{this.register(e)}}>Register</Button>
-                </div>
-                <div id="buyer" style={{display:"inline-block",backgroundColor:"lightblue",width:"45vw",height:"100vh"
-                                        ,verticalAlign:"top"}}>
-                    <Button type="dashed" shape="round" style={{display:"flex",position:"absolute",left:"64vw",top:"15.5vh"}}
-                            onClick={(e)=>{this.login(e)}}>Login</Button>
-                    <img src={businessintro} 
-                            style={{maxHeight:"25vh",maxWidth:"25vw",display:"flex",position:"absolute",left:"62.5vw",top:"35.5vh"}}/>
-                    <Button type="dashed" shape="round" style={{display:"flex",position:"absolute",left:"63.5vw",bottom:"15.5vh"}}
-                            onClick={(e)=>{this.register(e)}}>Register</Button>
-                </div>
-                <div id="menu" style={{display:"inline-block",backgroundColor:"lightgreen",width:"8.75vw",height:"100vh"
+                <div id="menu" style={{display:"inline-block",backgroundColor:"black",width:"9vw",height:"100vh"
                                         ,verticalAlign:"top"}}>
                             <Modal
                                 title="Vertically centered modal dialog"
@@ -63,12 +59,25 @@ class Intro extends Component{
                                 <p>some contents...</p>
                                 <p>some contents...</p>
                             </Modal>
-                        <Button className="antButton" type="text"  style={{display:"block",margin:"auto",marginTop:"5vh",fontSize:"3vh",fontFamily:"'Courier New', Courier, monospace"}}
+                        <Button className="antButton" type="text"  style={{color:"white",display:"block",margin:"auto",marginTop:"5vh",fontSize:"2vw",fontFamily:"newFont"}}
                                 onClick={(e)=>{this.showDialog(e)}}>Aim</Button>
-                        <Button className="antButton"type="text"  style={{display:"block",margin:"auto",marginTop:"5vh",fontSize:"3vh",fontFamily:"'Courier New', Courier, monospace"}}
+                        <Button className="antButton"type="text"  style={{color:"white",display:"block",margin:"auto",marginTop:"5vh",fontSize:"2vw",fontFamily:"newFont"}}
                                 onClick={(e)=>{this.showDialog(e)}}>How?</Button>
-                        <Button className="antButton" type="text"  style={{display:"block",margin:"auto",marginTop:"5vh",fontSize:"3vh",fontFamily:"'Courier New', Courier, monospace",overflow:"hidden"}}
+                        <Button className="antButton" type="text"  style={{color:"white",display:"block",margin:"auto",marginTop:"5vh",fontSize:"2vw",fontFamily:"newFont"}}
                                 onClick={(e)=>{this.showDialog(e)}}>Schemes</Button>
+                </div>
+                <div style={{display:"inline-block",width:"75vw",height:"100vh",padding:"8.5%"}}>
+                    <div style={{width:"75vw",height:"50vh"}}>
+                        <Carousel style={{margin:"auto",width:"75vw",height:"50vh"}} navButtonsAlwaysVisible="true">
+                            {
+                                items.map( (item, i) => <Item key={i} item={item} /> )
+                            }
+                        </Carousel>
+                    </div>
+                    <div style={{marginTop:"5vh",width:"75vw"}}>
+                        <Button type="text" style={{float:"left"}} onClick={(e) => {this.login(e)}}>LOGIN</Button>
+                        <Button type="text" style={{float:"right"}} onClick={(e) => {this.register(e)}}>REGISTER</Button>
+                    </div>
                 </div>
             </div>
         )
