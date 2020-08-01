@@ -58,7 +58,7 @@ class Intro extends Component{
                                 onOk={() => this.setModalVisible(false)}
                                 onCancel={() => this.setModalVisible(false)}
                                 >
-                                <p>some contents...</p>
+                                <Button target="_blank" rel="noopener noreferrer" href="https://github.com/rarsahki/SIH_FRONTEND">SCHEME 1</Button>
                                 <p>some contents...</p>
                                 <p>some contents...</p>
                             </Modal>
