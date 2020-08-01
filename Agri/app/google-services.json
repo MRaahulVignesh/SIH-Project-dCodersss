@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "243738732622-fu1p5vbc9mcsq1l17bckvp9t9jah0i70.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.agri",
+            "certificate_hash": "1e1d67e2f00831b2419bc1f8a05d77ba041ad512"
+          }
+        },
+        {
           "client_id": "243738732622-uqqr99vrlg5s4h64iflniddrq9ttiu1k.apps.googleusercontent.com",
           "client_type": 3
         }
