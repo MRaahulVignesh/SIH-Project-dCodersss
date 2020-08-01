@@ -21,7 +21,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, secondaryListItems } from './listItems';
 import Chart from './Chart';
 import Deposits from './Deposits';
-import Orders from './Orders';
+import Orders2 from './Orders2';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -173,7 +173,7 @@ export default function Dashboard() {
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            <ListItem button onClick={(e)=>history.push('/govttransactions')}>
+            <ListItem button onClick={(e)=>history.push('/companytransactions')}>
               <ListItemIcon>
                 <ShoppingCartIcon />
               </ListItemIcon>
@@ -207,7 +207,7 @@ export default function Dashboard() {
             {/* Recent Orders */}
             <Grid item xs={12} >
               <Paper className={classes.paper}>
-                <Orders />
+                <Orders2/>
               </Paper>
             </Grid>
           </Grid>

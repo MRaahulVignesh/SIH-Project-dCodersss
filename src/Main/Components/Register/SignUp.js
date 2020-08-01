@@ -35,7 +35,21 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
-  const [fname,lname,email,password,govt] = useState("","","","",false)
+  const [values, setValues] = useState({  
+      fname: "",
+      lname: "",
+      email: "",
+      password: "",
+      govt:false
+  });
+
+  const {fname,lname,email,password,govt} = values;
+  const handleChange = name => event => {
+    setValues({ ...values,[name]: event.target.value });
+  };
+  const register = (e) => {
+    alert("works")
+  }
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -58,7 +72,7 @@ export default function SignUp() {
                 id="firstName"
                 label="First Name"
                 autoFocus
-                onChange={(e) => {this.setState({fname:e.target.textContent})}}
+                onChange={handleChange("fname")}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -70,7 +84,7 @@ export default function SignUp() {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
-                onChange={(e) => {this.setState({lname:e.target.textContent})}}
+                onChange={handleChange("lname")}
               />
             </Grid>
             <Grid item xs={12}>
@@ -82,7 +96,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                onChange={(e) => {this.setState({email:e.target.textContent})}}
+                onChange={handleChange("email")}
               />
             </Grid>
             <Grid item xs={12}>
@@ -95,13 +109,14 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={handleChange("password")}
               />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                onChange={(e) => alert(this.state.email)}
+                onChange={(e) => {setValues({...values,govt:true})}}
                 control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I am a Govt. of India employee."
+                label="Govt. of India employee"
               />
             </Grid>
           </Grid>
@@ -111,6 +126,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={(e) => register(e)}
           >
             Sign Up
           </Button>

@@ -9,16 +9,16 @@ import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
 
 // Generate Order Data
-function createData(id, date,seller, loc, buy, quantity, paymentMethod, amount) {
-  return { id, date,seller, loc, buy, quantity, paymentMethod, amount };
+function createData(id, date, name, shipTo, paymentMethod, amount) {
+  return { id, date, name, shipTo, paymentMethod, amount };
 }
 
 const rows = [
-  createData(0, '1 August 2020', 'Ram Kumar', 'Gorakhpur, UP','Ark Srivastava', '1000kg','PAYTM', 312.44),
-  createData(1, '30 July 2020', 'Kamlesh Khanna', 'Chennai, TN', 'Ark Srivastava', '1000kg','PAYTM', 866.99),
-  createData(2, '29 July 2020', 'Pradeep Kumar', 'Trichy, TN', 'Ark Srivastava', '1000kg','ONLINE SBI', 100.81),
-  createData(3, '26 July 2020', 'Nikhil Sebastian', 'Cochin, KL', 'Ark Srivastava', '1000kg','GPAY', 654.39),
-  createData(4, '19 July 2020', 'Maha Fatheema', 'Mumbai, MH', 'Ark Srivastava', '1000kg','ONLINE SBI', 212.79),
+  createData(0, '1 August 2020', 'Ram Kumar', 'Gorakhpur, UP', 'PAYTM', 312.44),
+  createData(1, '30 July 2020', 'Kamlesh Khanna', 'Chennai, TN', 'PAYTM', 866.99),
+  createData(2, '29 July 2020', 'Pradeep Kumar', 'Trichy, TN', 'ONLINE SBI', 100.81),
+  createData(3, '26 July 2020', 'Nikhil Sebastian', 'Cochin, KL', 'GPAY', 654.39),
+  createData(4, '19 July 2020', 'Maha Fatheema', 'Mumbai, MH', 'ONLINE SBI', 212.79),
 ];
 
 function preventDefault(event) {
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Orders() {
+export default function Orders2() {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -40,10 +40,8 @@ export default function Orders() {
         <TableHead>
           <TableRow>
             <TableCell>Date</TableCell>
-            <TableCell>Seller</TableCell>
+            <TableCell>Name</TableCell>
             <TableCell>Location</TableCell>
-            <TableCell>Buyer</TableCell>
-            <TableCell>Quantity</TableCell>
             <TableCell>Payment Method</TableCell>
             <TableCell align="right">Order Amount</TableCell>
           </TableRow>
@@ -52,10 +50,8 @@ export default function Orders() {
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell>{row.date}</TableCell>
-              <TableCell>{row.seller}</TableCell>
-              <TableCell>{row.loc}</TableCell>
-              <TableCell>{row.buy}</TableCell>
-              <TableCell>{row.quantity}</TableCell>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.shipTo}</TableCell>
               <TableCell>{row.paymentMethod}</TableCell>
               <TableCell align="right">{row.amount}</TableCell>
             </TableRow>
@@ -63,7 +59,7 @@ export default function Orders() {
         </TableBody>
       </Table>
       <div className={classes.seeMore}>
-        <Link color="primary" target="_blank" href="/govttransactions">
+        <Link color="primary" target="_blank" href="/companytransaction">
           See more orders
         </Link>
       </div>

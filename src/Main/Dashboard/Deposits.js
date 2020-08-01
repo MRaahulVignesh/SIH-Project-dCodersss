@@ -20,7 +20,7 @@ export default function Deposits() {
     <React.Fragment>
       <Title>Recent Orders</Title>
       <Typography component="p" variant="h4">
-        ₹3,024.00
+        ₹312.44
       </Typography>
       <Typography color="textSecondary" className={classes.depositContext}>
         on 1 August, 2020

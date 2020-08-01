@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -47,7 +47,19 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignInSide() {
   const classes = useStyles();
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+    govt:false
+  });
 
+  const {email,password,govt} = values;
+  const handleChange = name => event => {
+    setValues({ ...values,[name]: event.target.value });
+  };
+  const login = (e) => {
+    alert("works")
+  }
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -71,6 +83,7 @@ export default function SignInSide() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleChange("email")}
             />
             <TextField
               variant="outlined"
@@ -82,10 +95,12 @@ export default function SignInSide() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handleChange("password")}
             />
             <FormControlLabel
+              onChange={(e) => {setValues({...values,govt:true})}}
               control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              label="Govt. of India employee"
             />
             <Button
               type="submit"
@@ -93,6 +108,7 @@ export default function SignInSide() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={(e) => login(e)}
             >
               Sign In
             </Button>

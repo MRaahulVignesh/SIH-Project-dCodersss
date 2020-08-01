@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './Main.css'
 import Ticker from 'react-ticker'
 import { Button } from 'antd';
-import { Redirect } from 'react-router-dom';
 
 class Main extends Component{
     redirect = (e) => {

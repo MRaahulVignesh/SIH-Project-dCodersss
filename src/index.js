@@ -9,9 +9,11 @@ import Main from './Main/Main';
 import Crop from './Main/Components/Crop';
 import FarmerTransaction from './Main/Components/FarmerTransaction';
 import CompanyTransaction from './Main/Components/CompanyTransaction';
+import GovtTransaction from './Main/Components/GovtTransaction';
 import CompanyDashboard from './Main/Dashboard/CompanyDashboard';
 import SignInSide from './Main/Components/Register/SignInSide';
 import SignUp from './Main/Components/Register/SignUp';
+import GovtDashboard from './Main/Dashboard/GovtDashboard';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -20,11 +22,13 @@ ReactDOM.render(
                 <Route path="/register" component={SignUp} />
                 <Route path="/login" component={SignInSide} />
                 <Route path="/farmertransaction" component={FarmerTransaction} />
-                <Route path="/companytransaction" component={CompanyTransaction} />
+                <Route path="/govttransactions" component={GovtTransaction} />
+                <Route path="/companytransactions" component={CompanyTransaction} />
                 <Route path="/companyTransaction" component={Intro} />
                 <Route path="/intro" component={Intro} />
                 <Route path="/crop" component={Crop} />
                 <Route path="/main" component={Main} />
+                <Route path="/govtdashboard" component={GovtDashboard} />
                 <Route path="/companydashboard" component={CompanyDashboard} />
                 <Route path="/" component={Intro} />
               </Switch>

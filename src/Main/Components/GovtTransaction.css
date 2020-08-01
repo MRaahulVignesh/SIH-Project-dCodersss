@@ -1,0 +1,19 @@
+#main{
+    overflow: hidden;
+}
+
+#transaction{
+    display: inline-block;
+    height: 100vh;
+    width: 100vw;
+    background-color: white;
+    overflow: hidden;
+    margin: auto;
+}
+
+#transactions{
+    margin: auto;
+    height: 100vh;
+    width: 100vw;
+    background-color: white;overflow: hidden;
+}

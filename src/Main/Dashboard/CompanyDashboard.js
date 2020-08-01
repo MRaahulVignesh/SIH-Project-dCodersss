@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Dashboard from './Dashboard.js'
+import Dashboard2 from './Dashboard2.js'
 class CompanyDashboard extends Component{
     render(){
         return(
-            <Dashboard/>
+            <Dashboard2/>
         )
     }
 }
