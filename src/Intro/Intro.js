@@ -3,7 +3,8 @@ import './Intro.css'
 import { Modal, Button } from 'antd';
 import "antd/dist/antd.css";
 import Ticker from 'react-ticker'
-
+import farmerIntro from './farmerintro.png'
+import businessintro from './businessintro.png'
 class Intro extends Component{
     state = {
         modalVisible: false
@@ -35,7 +36,7 @@ class Intro extends Component{
                                         ,verticalAlign:"top"}}>
                     <Button type="dashed" shape="round" style={{display:"flex",position:"absolute",left:"18vw",top:"15.5vh"}}
                             onClick={(e)=>{this.login(e)}}>Login</Button>
-                    <img src={require('/home/ark/Downloads/sih_frontend/sih_frontend/src/pics/farmerintro.png')} 
+                    <img src={farmerIntro} 
                         style={{maxHeight:"25vh",maxWidth:"25vw",display:"flex",position:"absolute",left:"15vw",top:"35.5vh"}}/>
                     <Button type="dashed" shape="round" style={{display:"flex",position:"absolute",left:"17.75vw",bottom:"15.5vh"}}
                             onClick={(e)=>{this.register(e)}}>Register</Button>
@@ -44,7 +45,7 @@ class Intro extends Component{
                                         ,verticalAlign:"top"}}>
                     <Button type="dashed" shape="round" style={{display:"flex",position:"absolute",left:"64vw",top:"15.5vh"}}
                             onClick={(e)=>{this.login(e)}}>Login</Button>
-                    <img src={require('/home/ark/Downloads/sih_frontend/sih_frontend/src/pics/businessintro.png')} 
+                    <img src={businessintro} 
                             style={{maxHeight:"25vh",maxWidth:"25vw",display:"flex",position:"absolute",left:"62.5vw",top:"35.5vh"}}/>
                     <Button type="dashed" shape="round" style={{display:"flex",position:"absolute",left:"63.5vw",bottom:"15.5vh"}}
                             onClick={(e)=>{this.register(e)}}>Register</Button>
