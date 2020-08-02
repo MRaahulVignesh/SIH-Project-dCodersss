@@ -1,5 +1,6 @@
 #main{
     overflow: hidden;
+    padding-top: 1%;
 }
 
 #transaction{
@@ -8,8 +9,6 @@
     width: 80%;
     background-color: white;
     overflow: hidden;
-    margin: auto;
-    margin-top: 2.5%;
 }
 
 #transactions{

@@ -47,33 +47,50 @@ export default function SignUp() {
       loading: false,
       govt:false,
       submit: false,
-      error: false
+      error: false,
+      errorMessage: ""
   });
 
-  const {fname,lname,email,password,loading,govt,submit,error} = values;
+  const {fname,lname,email,password,loading,govt,submit,error,errorMessage} = values;
   const handleChange = name => event => {
     setValues({ ...values,[name]: event.target.value });
   };
   const register = (e) => {
     e.preventDefault();
     setValues({ ...values,loading:true,error:false});
-    fire.auth().createUserWithEmailAndPassword(email, password).then((u)=>{db.collection("buyer").doc(u.user.uid).set({
-      fname:fname,lname:lname,email:email,govt:govt}).then(function() {
-        console.log("Document successfully written!");
-        setValues({ ...values,loading:false,submit:true});
-    })
-    .catch(function(error) {
-        console.error("Error writing document: ", error);
-        setValues({ ...values,loading:false,error:true});
-    });})
-    .catch((error) => {
-        console.log(error);
-      })
+    var passw =  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+    if(fname.length!==0 && lname.length!==0)
+      {
+        if(email.includes("@") && (email.includes(".com")||email.includes(".co.in")||email.includes(".org")||email.includes(".net")))
+          {
+            if(password.match(passw))
+              {
+                fire.auth().createUserWithEmailAndPassword(email, password).then((u)=>{db.collection("buyer").doc(u.user.uid).set({
+                fname:fname,lname:lname,email:email,govt:govt}).then(function() {
+                  console.log("Document successfully written!");
+                  setValues({ ...values,loading:false,submit:true});
+                })
+                .catch(function(error) {
+                    console.error("Error writing document: ", error);
+                    setValues({ ...values,loading:false,error:true});
+                });})
+                .catch((error) => {
+                    console.log(error);
+                })
+              }else{
+                setValues({ ...values,loading:false,error:true,errorMessage:"Enter a valid password (Password should be 7-15 charcters long and should contain both Upper and Lower case characters along with special characters"});
+              }
+            }else{
+              setValues({ ...values,loading:false,error:true,errorMessage:"Enter a valid email"});
+            }
+        }else{
+          setValues({ ...values,loading:false,error:true,errorMessage:"Please fill in your name"});
+      }
   }
   return (
     <div>
       {error?
-        <Alert severity="error">Please try again</Alert>
+        <Alert severity="error">{errorMessage}</Alert>
         :
         <div></div>
       }

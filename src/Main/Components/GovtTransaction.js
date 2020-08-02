@@ -4,63 +4,35 @@ import Ticker from 'react-ticker'
 import { Table, Input, Button, Space , Modal} from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
-
-const data = [
-    {
-      key: '1',
-      sell: 'Ram Kumar',
-      loc:"Gorakhpur, UP",
-      date:'1 August 2020',
-      buy:"Ark Srivastava",
-      quantity:"1000",
-      paym:'PAYTM', 
-      amt:312.44
-    },
-    {
-      key: '2',
-      date:'30 July 2020', 
-      sell:'Kamlesh Khanna',
-      buy:"Ark Srivastava",
-      quantity:"1000", 
-      loc:'Chennai, TN', 
-      paym:'PAYTM', 
-      amt:866.99
-    },{
-      key: '3',
-      date:'29 July 2020', 
-      sell:'Pradeep Kumar', 
-      buy:"Ark Srivastava",
-      quantity:"1000",
-      loc:'Trichy, TN', 
-      paym:'ONLINE SBI', 
-      amt:100.81
-    },{
-      key: '4',
-      date:'26 July 2020', 
-      sell:'Nikhil Sebastian',
-      buy:"Ark Srivastava",
-      quantity:"1000",
-      loc:'Cochin, KL', 
-      paym:'GPAY', 
-      amt:654.39
-    },{
-      key: '5',
-      date:'19 July 2020', 
-      sell:'Maha Fatheema',
-      buy:"Ark Srivastava",
-      quantity:"1000",
-      loc:'Mumbai, MH', 
-      paym:'ONLINE SBI', 
-      amt:212.79
-    },
-];
+import { CircularProgress } from 'material-ui';
+import axios from 'axios';
 
 class GovtTransaction extends Component{
 
+    componentDidMount(){
+      axios.get("http://localhost:5000/api/blocks").then(res => {
+        console.log(res.data.length)
+        var size = res.data.length;
+        var data = [];
+        for(var i=1;i<size;i++){
+            console.log(res.data[i].index)
+            data.push(
+              {key:res.data[i].index,date:res.data[i].data.date,seller:res.data[i].data.seller,crop:res.data[i].data.cropName,loc:res.data[i].data.location,buyer:res.data[i].data.buyer,quantity:res.data[i].data.quantity,paym:res.data[i].data.paymentMethod,amt:res.data[i].data.orderAmount}
+            )
+            this.setState({
+              items:this.state.items.concat({key:res.data[i].index,date:res.data[i].data.date,seller:res.data[i].data.seller,crop:res.data[i].data.cropName,loc:res.data[i].data.location,buyer:res.data[i].data.buyer,quantity:res.data[i].data.quantity,paym:res.data[i].data.paymentMethod,amt:res.data[i].data.orderAmount})
+            })
+        }
+      })
+      this.setState({loading:false})
+    }
+
     state = {
-        modalVisible: false,
-        searchText: '',
-        searchedColumn: '',
+      modalVisible: false,
+      searchText: '',
+      searchedColumn: '',
+      loading: true,
+      items: []
     }
     
     
@@ -143,10 +115,17 @@ class GovtTransaction extends Component{
             },
             {
               title: 'Seller',
-              dataIndex: 'sell',
+              dataIndex: 'seller',
               key: 'seller',
               width: '20%',
               ...this.getColumnSearchProps('seller'),
+            },
+            {
+              title: 'Crop',
+              dataIndex: 'crop',
+              key: 'crop',
+              width: '20%',
+              ...this.getColumnSearchProps('crop')
             },
             {
               title: 'Location',
@@ -157,10 +136,10 @@ class GovtTransaction extends Component{
             },
             {
               title: 'Buyer',
-              dataIndex: 'buy',
-              key: 'buy',
+              dataIndex: 'buyer',
+              key: 'buyer',
               width: '20%',
-              ...this.getColumnSearchProps('buy'),
+              ...this.getColumnSearchProps('buyer'),
             },
             {
               title: 'Quantity',
@@ -196,7 +175,7 @@ class GovtTransaction extends Component{
                 </Ticker>
                 <div id="transaction">
                     <div id="transactions">
-                        <Table     pagination={{ defaultPageSize: 5, showSizeChanger: true, pageSizeOptions: ['5', '10', '20']}} columns={columns} dataSource={data} />
+                        {this.state.loading?<div></div>:<Table pagination={{ defaultPageSize: 5, showSizeChanger: true, pageSizeOptions: ['5', '10', '20']}} columns={columns} dataSource={this.state.items} />}
                     </div>
                 </div>
             </div>

@@ -75,7 +75,7 @@ export default function SignInSide() {
                                                                         else
                                                                           setValues({ ...values,notgovt:true})
                                                                       })
-                                                                      setValues({ ...values,loading:false});
+                                                                      setValues({ ...values,loading:false,error:false});
     }).catch((error) => {
         console.log(error);
         setValues({ ...values,loading:false,error:true});
@@ -104,6 +104,7 @@ export default function SignInSide() {
             </Typography>
             <form className={classes.form} noValidate>
               <TextField
+                type="email"
                 variant="outlined"
                 margin="normal"
                 required
