@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -127,38 +125,6 @@ public class CropDetailsActivity extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             cropImageView.setImageBitmap(imageBitmap);
             encodeBitmapAndSaveToFirebase(imageBitmap);
-//
-//            Uri uri = data.getData();
-//            Picasso.get().load(uri)
-//                    .into(cropImageView);
-////            cropImageView.setImageURI(uri);
-//
-//            final StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId());
-//            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    mProgress.dismiss();
-//                    Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    mProgress.dismiss();
-//                    Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-
-//            filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                @Override
-//                public void onSuccess(Uri uri) {
-//                    if (uri != null) {
-//                        crop.setImageURL(uri.toString());
-//                        updateImageURLInDatabase();
-//                    } else {
-//                        Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            });
         }
     }
 
@@ -215,8 +181,4 @@ public class CropDetailsActivity extends AppCompatActivity {
                 .into(cropImageView);
     }
 
-    private Bitmap decodeFromFirebaseBase64(String image) {
-        byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-    }
 }
