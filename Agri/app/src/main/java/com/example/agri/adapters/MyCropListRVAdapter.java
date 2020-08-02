@@ -1,14 +1,17 @@
 package com.example.agri.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.agri.CropDetailsActivity;
 import com.example.agri.R;
 import com.example.agri.pojos.Crops;
 
@@ -40,6 +43,15 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
         holder.cropRemainingQuantityTV.setText(crop.getRemainingQuantity());
         holder.cropIsOrganicTV.setText(crop.getOrganic().toString());
         holder.cropPriceTV.setText(crop.getPrice());
+
+        holder.parentRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, CropDetailsActivity.class);
+                //TODO:pass crop into intent
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -49,9 +61,11 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
 
     static class MyCropItemViewHolder extends RecyclerView.ViewHolder {
         TextView cropNameTV, cropExpectedDateTV, cropTotalQuantityTV, cropRemainingQuantityTV, cropIsOrganicTV, cropPriceTV;
+        RelativeLayout parentRL;
 
         MyCropItemViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.parentRL = itemView.findViewById(R.id.crop_list_item_parent_rl);
             this.cropNameTV = itemView.findViewById(R.id.mu_crop_name);
             this.cropExpectedDateTV = itemView.findViewById(R.id.my_crop_expected_date);
             this.cropTotalQuantityTV = itemView.findViewById(R.id.totalQuantity);

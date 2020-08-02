@@ -27,5 +27,6 @@
     <string name="date">Date</string>
     <string name="crop_name">Crop Name</string>
     <string name="unit_price">Unit Price</string>
+    <string name="upload_new_image">Upload new image</string>
     <string name="enter_name">Enter Name</string>
 </resources>
