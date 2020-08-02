@@ -1,51 +1,14 @@
 package com.example.agri.pojos;
 
-import com.google.type.Date;
 
 public class Crops {
     String cropName, cropId;
     Integer totalQuantity, remainingQuantity, price;
     Boolean organic;
     String sellerId;
-    Date expectedDate;
+    String expectedDate;
     Boolean delivered;
     String imageURL;
-
-    public Crops() {
-    }
-
-    public Crops(String cropName, String cropId, Integer totalQuantity, Integer remainingQuantity, Integer price, Boolean organic, String sellerId, Date expectedDate, Boolean delivered, String imageURL) {
-        this.cropName = cropName;
-        this.cropId = cropId;
-        this.totalQuantity = totalQuantity;
-        this.remainingQuantity = remainingQuantity;
-        this.price = price;
-        this.organic = organic;
-        this.sellerId = sellerId;
-        this.expectedDate = expectedDate;
-        this.delivered = delivered;
-        this.imageURL = imageURL;
-    }
-
-    public Crops(String cropName, String cropId, Integer totalQuantity, Integer remainingQuantity, Boolean organic, String sellerId, Date expectedDate, Boolean delivered, String imageURL) {
-        this.cropName = cropName;
-        this.cropId = cropId;
-        this.totalQuantity = totalQuantity;
-        this.remainingQuantity = remainingQuantity;
-        this.organic = organic;
-        this.sellerId = sellerId;
-        this.expectedDate = expectedDate;
-        this.delivered = delivered;
-        this.imageURL = imageURL;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
 
     public String getCropName() {
         return cropName;
@@ -79,6 +42,22 @@ public class Crops {
         this.remainingQuantity = remainingQuantity;
     }
 
+    public Crops() {
+    }
+
+    public Crops(String cropName, String cropId, Integer totalQuantity, Integer remainingQuantity, Integer price, Boolean organic, String sellerId, String expectedDate, Boolean delivered, String imageURL) {
+        this.cropName = cropName;
+        this.cropId = cropId;
+        this.totalQuantity = totalQuantity;
+        this.remainingQuantity = remainingQuantity;
+        this.price = price;
+        this.organic = organic;
+        this.sellerId = sellerId;
+        this.expectedDate = expectedDate;
+        this.delivered = delivered;
+        this.imageURL = imageURL;
+    }
+
     public Boolean getOrganic() {
         return organic;
     }
@@ -95,12 +74,12 @@ public class Crops {
         this.sellerId = sellerId;
     }
 
-    public Date getExpectedDate() {
-        return expectedDate;
+    public Integer getPrice() {
+        return price;
     }
 
-    public void setExpectedDate(Date expectedDate) {
-        this.expectedDate = expectedDate;
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
     public Boolean getDelivered() {
@@ -117,5 +96,13 @@ public class Crops {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public String getExpectedDate() {
+        return expectedDate;
+    }
+
+    public void setExpectedDate(String expectedDate) {
+        this.expectedDate = expectedDate;
     }
 }

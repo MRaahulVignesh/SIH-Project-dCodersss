@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
                 mDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
                 final EditText addCropDialogueCropNameET = mDialog.findViewById(R.id.cropname);
-                final EditText addCropDialogueTotalQuantityET = findViewById(R.id.totalQuantity);
-                final EditText addCropDialogueDateET = findViewById(R.id.expectedDate);
-                final EditText unitPriceET = findViewById(R.id.unitPrice);
+                final EditText addCropDialogueTotalQuantityET = mDialog.findViewById(R.id.totalQuantity);
+                final EditText addCropDialogueDateET = mDialog.findViewById(R.id.expectedDate);
+                final EditText unitPriceET = mDialog.findViewById(R.id.unitPrice);
                 Button addBtn = mDialog.findViewById(R.id.add_btn);
                 addBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                                     .build();
 
                             crop.setCropName(cropName);
-                            crop.setExpectedDate(cropExpectedDate);
+                            crop.setExpectedDate(cropExpectedDate.toString());
                             crop.setTotalQuantity(Integer.parseInt(totalQuantity));
                             crop.setRemainingQuantity(crop.getTotalQuantity());
                             crop.setOrganic(false);
@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+                mDialog.show();
             }
         });
     }

@@ -82,8 +82,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if (aadhaarNo.length() == 0) {
                     Toast.makeText(context, "Please enter your 12 digit aadhar number", Toast.LENGTH_SHORT).show();
-                } else if (email.length() == 0 || email.trim().length() == 0) {
-                    Toast.makeText(context, "Please enter your email address", Toast.LENGTH_SHORT).show();
                 } else if (location.length() == 0 || location.trim().length() == 0) {
                     Toast.makeText(context, "Please enter your location", Toast.LENGTH_SHORT).show();
                 } else if (aadhaarNo.length() != 12) {
@@ -122,6 +120,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean isValidEmail(String target) {
+        if (target.length() == 0)
+            return true;
         if (target == null) {
             return false;
         } else {
