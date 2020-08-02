@@ -65,7 +65,7 @@ public class CropDetailsActivity extends AppCompatActivity {
         priceTV = findViewById(R.id.crop_price);
         organicTV = findViewById(R.id.crop_isOrganic);
         sellerIdTV = findViewById(R.id.crop_seller_id);
-        expectedDateTV = findViewById(R.id.my_crop_expected_date);
+        expectedDateTV = findViewById(R.id.crop_expected_date);
         deliveredTV = findViewById(R.id.crop_delivered);
 
 
@@ -74,13 +74,13 @@ public class CropDetailsActivity extends AppCompatActivity {
         if (crop != null) {
             cropNameTV.setText(crop.getCropName());
             cropIdTV.setText(crop.getCropId());
-            totalQuantityTV.setText(crop.getTotalQuantity());
-            remainingQuantityTV.setText(crop.getRemainingQuantity());
-            priceTV.setText(crop.getPrice());
+            totalQuantityTV.setText(crop.getTotalQuantity() + "");
+            remainingQuantityTV.setText(crop.getRemainingQuantity() + "");
+            priceTV.setText(crop.getPrice() + "");
             organicTV.setText("IsOrganic " + crop.getOrganic().toString());
             sellerIdTV.setText(crop.getSellerId());
             expectedDateTV.setText(crop.getExpectedDate());
-            deliveredTV.setText("delivered " + crop.getDelivered().toString());
+            deliveredTV.setText("delivered " + (crop.getDelivered() != null ? crop.getDelivered().toString() : false));
             Picasso.get().load(crop.getImageURL())
                     .centerCrop()
                     .into(cropImageView);

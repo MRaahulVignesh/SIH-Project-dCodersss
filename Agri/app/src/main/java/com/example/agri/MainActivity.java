@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                             data.setCropsList(new ArrayList<Crops>());
                         }
                         //adding my crops to myCropsList
+                        myCropList.clear();
                         for (Crops c : data.getCropsList()) {
                             if (c.getSellerId().equals(mAuth.getUid())) {
                                 myCropList.add(c);
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                             crop.setTotalQuantity(Integer.parseInt(totalQuantity));
                             crop.setRemainingQuantity(crop.getTotalQuantity());
                             crop.setOrganic(false);
+                            crop.setDelivered(false);
                             crop.setPrice(Integer.parseInt(unitPrice));
 
                             crop.setSellerId(mAuth.getUid());
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Failed To Upload!, Try Again!" + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
-                            
+
                             myCropListRVAdapter.notifyDataSetChanged();
                             mDialog.hide();
                         }
