@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -33,7 +33,8 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { useHistory } from 'react-router-dom';
-
+import GovtTransaction from '../Components/GovtTransaction';
+import Reports from '../Components/Reports';
 
 const drawerWidth = 240;
 
@@ -117,6 +118,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Dashboard() {
+  const [values, setValues] = useState({
+    dashboard: false,
+    orders: false,
+    reports: false
+  });
+  const {dashboard,orders,reports} = values;
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = React.useState(true);
@@ -167,19 +174,19 @@ export default function Dashboard() {
         <Divider />
         <List>
           <div>
-            <ListItem button>
+            <ListItem button onClick={(e)=>{setValues({ ...values,dashboard:true,orders:false,reports:false})}}>
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            <ListItem button onClick={(e)=>history.push('/govttransactions')}>
+            <ListItem button onClick={(e)=>{setValues({ ...values,dashboard:false,orders:true,reports:false})}}>
               <ListItemIcon>
                 <ShoppingCartIcon />
               </ListItemIcon>
               <ListItemText primary="Orders" />
             </ListItem>
-            <ListItem button>
+            <ListItem button onClick={(e)=>{setValues({ ...values,dashboard:false,orders:false,reports:true})}}>
               <ListItemIcon>
                 <BarChartIcon />
               </ListItemIcon>
@@ -188,31 +195,31 @@ export default function Dashboard() {
           </div>
         </List>
       </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                <Chart />
-              </Paper>
+      {orders?<GovtTransaction/>:reports?<Reports/>:<main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          <Container maxWidth="lg" className={classes.container}>
+            <Grid container spacing={3}>
+              {/* Chart */}
+              <Grid item xs={12} md={8} lg={9}>
+                <Paper className={fixedHeightPaper}>
+                  <Chart />
+                </Paper>
+              </Grid>
+              {/* Recent Deposits */}
+              <Grid item xs={12} md={4} lg={3}>
+                <Paper className={fixedHeightPaper}>
+                  <Deposits />
+                </Paper>
+              </Grid>
+              {/* Recent Orders */}
+              <Grid item xs={12} >
+                <Paper className={classes.paper}>
+                  <Orders />
+                </Paper>
+              </Grid>
             </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <Deposits />
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12} >
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </main>
+          </Container>
+        </main>}
     </div>
   );
 }

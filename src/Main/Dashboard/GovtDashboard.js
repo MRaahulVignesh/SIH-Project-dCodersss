@@ -12,7 +12,7 @@ class GovtDashboard extends Component{
     }
     render(){
         return(
-            <div>
+            <div style={{overflowY:"hidden"}}>
                 {this.state.welcome?
                     <Alert variant="filled" severity="success">
                             Welcome

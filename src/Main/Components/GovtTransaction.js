@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './CompanyTransaction.css'
+import './GovtTransaction.css'
 import Ticker from 'react-ticker'
 import { Table, Input, Button, Space , Modal} from 'antd';
 import Highlighter from 'react-highlight-words';

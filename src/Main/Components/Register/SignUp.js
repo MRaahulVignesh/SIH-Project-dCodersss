@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import fire, { db } from  '/home/ark/Downloads/sih_frontend/sih_frontend/src/Config/fire.js';
+import fire, { db } from  '../../../Config/fire.js';
 import { CircularProgress } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
