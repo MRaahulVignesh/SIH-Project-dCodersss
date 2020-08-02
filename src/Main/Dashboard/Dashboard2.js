@@ -198,7 +198,7 @@ export default function Dashboard() {
           </div>
         </List>
       </Drawer>
-          {orders?<CompanyTransaction/>:reports?<Listed/>:<main className={classes.content}>
+          {orders?<CompanyTransaction/>:reports?<Listed />:<main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
             <Grid container spacing={3}>
