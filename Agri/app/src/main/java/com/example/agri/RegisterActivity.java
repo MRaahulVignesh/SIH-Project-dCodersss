@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     FarmersFB data;
-    private EditText aadharCardNoET, emailET, locationET;
+    private EditText aadharCardNoET, emailET, locationET, nameET;
     private Context context;
 
     @Override
@@ -47,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
         emailET = findViewById(R.id.emailet);
         locationET = findViewById(R.id.locationet);
         contBtn = findViewById(R.id.ctnBtn);
+        nameET = findViewById(R.id.name_et);
 
         DocumentReference docRef = db.collection("Agri").document("Farmers");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -79,11 +80,14 @@ public class RegisterActivity extends AppCompatActivity {
                 String aadhaarNo = aadharCardNoET.getText().toString();
                 String email = emailET.getText().toString();
                 String location = locationET.getText().toString();
+                String name = nameET.getText().toString();
 
                 if (aadhaarNo.length() == 0) {
                     Toast.makeText(context, "Please enter your 12 digit aadhar number", Toast.LENGTH_SHORT).show();
                 } else if (location.length() == 0 || location.trim().length() == 0) {
                     Toast.makeText(context, "Please enter your location", Toast.LENGTH_SHORT).show();
+                } else if (name.length() == 0 || name.trim().length() == 0) {
+                    Toast.makeText(context, "Please enter your name", Toast.LENGTH_SHORT).show();
                 } else if (aadhaarNo.length() != 12) {
                     Toast.makeText(context, "Aadhar number should be 12 digits in length", Toast.LENGTH_SHORT).show();
                 } else if (!isValidEmail(email)) {
@@ -95,6 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
                     farmer.setId(mAuth.getUid());
                     farmer.setAadhaarNo(aadhaarNo);
                     farmer.setEmail(email);
+                    farmer.setName(name);
 
                     data.getFarmersList().add(farmer);
 

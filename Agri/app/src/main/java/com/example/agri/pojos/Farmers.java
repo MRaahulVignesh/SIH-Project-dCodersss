@@ -2,16 +2,25 @@ package com.example.agri.pojos;
 
 public class Farmers {
     String Id;
-    String AadhaarNo, MobNo, Email;
+    String AadhaarNo, MobNo, Email, Name;
 
     public Farmers() {
     }
 
-    public Farmers(String id, String aadhaarNo, String mobNo, String email) {
+    public Farmers(String id, String aadhaarNo, String mobNo, String email, String name) {
         Id = id;
         AadhaarNo = aadhaarNo;
         MobNo = mobNo;
         Email = email;
+        Name = name;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
     }
 
     public String getAadhaarNo() {
