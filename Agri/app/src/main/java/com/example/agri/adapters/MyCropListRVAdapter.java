@@ -36,7 +36,7 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyCropItemViewHolder holder, int position) {
-        Crops crop = cropsList.get(position);
+        final Crops crop = cropsList.get(position);
         holder.cropNameTV.setText(crop.getCropName());
         holder.cropExpectedDateTV.setText(crop.getExpectedDate().toString());
         holder.cropTotalQuantityTV.setText(crop.getTotalQuantity());
@@ -49,6 +49,7 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
             public void onClick(View v) {
                 Intent intent = new Intent(context, CropDetailsActivity.class);
                 //TODO:pass crop into intent
+                intent.putExtra("crop", crop);
                 context.startActivity(intent);
             }
         });

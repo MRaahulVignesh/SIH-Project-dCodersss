@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,37 +23,69 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.agri.pojos.Crops;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class CropDetailsActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 100;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 200;
+    private FirebaseFirestore db;
     private Button uploadNewImageBtn;
     private ImageView cropImageView;
     private StorageReference mStorage;
     private Context context;
     private ProgressDialog mProgress;
+    private Crops crop;
+    private TextView cropNameTV, cropIdTV, totalQuantityTV, remainingQuantityTV, priceTV, organicTV, sellerIdTV, expectedDateTV, deliveredTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_details);
         context = this;
+        db = FirebaseFirestore.getInstance();
 
         mStorage = FirebaseStorage.getInstance().getReference();
 
         uploadNewImageBtn = findViewById(R.id.upload_new_image_btn);
         cropImageView = findViewById(R.id.crop_image_view);
+        cropNameTV = findViewById(R.id.crop_name);
+        cropIdTV = findViewById(R.id.crop_id);
+        totalQuantityTV = findViewById(R.id.crop_total_quantity);
+        remainingQuantityTV = findViewById(R.id.crop_remaining_quantity);
+        priceTV = findViewById(R.id.crop_price);
+        organicTV = findViewById(R.id.crop_isOrganic);
+        sellerIdTV = findViewById(R.id.crop_seller_id);
+        expectedDateTV = findViewById(R.id.my_crop_expected_date);
+        deliveredTV = findViewById(R.id.crop_delivered);
 
-        //TODO: to get url and other data and load into imageview and other views
+
+        crop = (Crops) getIntent().getSerializableExtra("crop");
+
+        if (crop != null) {
+            cropNameTV.setText(crop.getCropName());
+            cropIdTV.setText(crop.getCropId());
+            totalQuantityTV.setText(crop.getTotalQuantity());
+            remainingQuantityTV.setText(crop.getRemainingQuantity());
+            priceTV.setText(crop.getPrice());
+            organicTV.setText("IsOrganic " + crop.getOrganic().toString());
+            sellerIdTV.setText(crop.getSellerId());
+            expectedDateTV.setText(crop.getExpectedDate());
+            deliveredTV.setText("delivered " + crop.getDelivered().toString());
+            Picasso.get().load(crop.getImageURL())
+                    .centerCrop()
+                    .into(cropImageView);
+        }
+
 
         mProgress = new ProgressDialog(this);
 
@@ -98,8 +131,8 @@ public class CropDetailsActivity extends AppCompatActivity {
 
             Uri uri = data.getData();
             cropImageView.setImageURI(uri);
-            //TODO:decide naming convention for image
-            StorageReference filepath = mStorage.child("CropPhotos").child(uri.getLastPathSegment());
+
+            StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId() + crop.getCropName() + uri.getLastPathSegment());
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -108,11 +141,16 @@ public class CropDetailsActivity extends AppCompatActivity {
 
                     Uri imageURL = taskSnapshot.getUploadSessionUri();
 
-                    //TODO:update the imageurl in database
+                    if (imageURL != null) {
+                        crop.setImageURL(imageURL.toString());
+                        updateImageURLInDatabase();
 
-                    Picasso.get().load(imageURL)
-                            .centerCrop()
-                            .into(cropImageView);
+                        Picasso.get().load(imageURL)
+                                .centerCrop()
+                                .into(cropImageView);
+                    } else {
+                        Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -124,17 +162,37 @@ public class CropDetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void updateImageURLInDatabase() {
+        for (Crops c : MainActivity.myCropList) {
+            if (c.getCropId().equals(crop.getCropId())) {
+                c.setImageURL(crop.getImageURL());
+            }
+        }
+        CollectionReference dbUsers = db.collection("Agri");
+        dbUsers.document("Crops").set(MainActivity.data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                mProgress.dismiss();
+                Toast.makeText(CropDetailsActivity.this, "Image URL updated Successfully!", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), "Failed To Upload!, Try Again!" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void encodeBitmapAndSaveToFirebase(final Bitmap imageBitmap) {
-        //TODO:find url and retrieve and pass
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        //TODO: decide naming convention
-        StorageReference filepath = mStorage.child("CropPhotos").child("");
+        StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId() + crop.getCropName());
         filepath.putBytes(baos.toByteArray()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 mProgress.dismiss();
                 Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                crop.setImageURL(taskSnapshot.getUploadSessionUri().toString());
                 showBitmapImageIntoCropImageView();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -148,21 +206,17 @@ public class CropDetailsActivity extends AppCompatActivity {
 
     private void showBitmapImageIntoCropImageView() {
         if (!"crop.getImageUrl()".contains("http")) {
-            try {
-                Bitmap imageBitmap = decodeFromFirebaseBase64("crop.getImageUrl()");
-                cropImageView.setImageBitmap(imageBitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Bitmap imageBitmap = decodeFromFirebaseBase64(crop.getImageURL());
+            cropImageView.setImageBitmap(imageBitmap);
         } else {
             Picasso.get()
-                    .load("crop.getImageUrl()")
+                    .load(crop.getImageURL())
                     .centerCrop()
                     .into(cropImageView);
         }
     }
 
-    private Bitmap decodeFromFirebaseBase64(String image) throws IOException {
+    private Bitmap decodeFromFirebaseBase64(String image) {
         byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
     }

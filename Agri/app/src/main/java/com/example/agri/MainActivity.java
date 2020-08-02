@@ -36,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
     Context context;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
-    CropsFB data;
+    public static CropsFB data;
     private RecyclerView cropRV;
-    private List<Crops> myCropList = new ArrayList<>();
+    public static List<Crops> myCropList = new ArrayList<>();
     private MyCropListRVAdapter myCropListRVAdapter;
 
 

@@ -1,7 +1,9 @@
 package com.example.agri.pojos;
 
 
-public class Crops {
+import java.io.Serializable;
+
+public class Crops implements Serializable {
     String cropName, cropId;
     Integer totalQuantity, remainingQuantity, price;
     Boolean organic;
