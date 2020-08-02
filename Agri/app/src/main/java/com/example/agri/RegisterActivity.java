@@ -1,9 +1,12 @@
 package com.example.agri;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     FarmersFB data;
+    private EditText aadharCardNoET, emailET, locationET;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,12 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        context = this;
+
+        aadharCardNoET = findViewById(R.id.aadharet);
+        emailET = findViewById(R.id.emailet);
+        locationET = findViewById(R.id.locationet);
+        contBtn = findViewById(R.id.ctnBtn);
 
         DocumentReference docRef = db.collection("Agri").document("Farmers");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -45,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         data = document.toObject(FarmersFB.class);
+                        contBtn.setClickable(true);
                     } else {
                         //Log.d(TAG, "No such document");\
                     }
@@ -55,39 +67,66 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        farmer = new Farmers();
-        farmer.setMobNo(getIntent().getStringExtra("MobNo"));
-        farmer.setId(mAuth.getUid());
-
         if (data == null) {
             data = new FarmersFB();
             data.setFarmersList(new ArrayList<Farmers>());
         }
 
-        contBtn = findViewById(R.id.ctnBtn);
         contBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO:Take inputs and verify if correct then go to main page
 
-                //after verification and fixing created Farmer class object
-                data.getFarmersList().add(farmer);
+                String aadhaarNo = aadharCardNoET.getText().toString();
+                String email = emailET.getText().toString();
+                String location = locationET.getText().toString();
 
-                CollectionReference dbUsers = db.collection("Agri");
-                dbUsers.document("Farmers").set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        //here is where we go into the app
-                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Sign Up Failed, Try Again " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if (aadhaarNo.length() == 0) {
+                    Toast.makeText(context, "Please enter your 12 digit aadhar number", Toast.LENGTH_SHORT).show();
+                } else if (email.length() == 0 || email.trim().length() == 0) {
+                    Toast.makeText(context, "Please enter your email address", Toast.LENGTH_SHORT).show();
+                } else if (location.length() == 0 || location.trim().length() == 0) {
+                    Toast.makeText(context, "Please enter your location", Toast.LENGTH_SHORT).show();
+                } else if (aadhaarNo.length() != 12) {
+                    Toast.makeText(context, "Aadhar number should be 12 digits in length", Toast.LENGTH_SHORT).show();
+                } else if (!isValidEmail(email)) {
+                    Toast.makeText(context, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+                } else {
+                    //after verification and fixing created Farmer class object
+                    farmer = new Farmers();
+                    farmer.setMobNo(getIntent().getStringExtra("MobNo"));
+                    farmer.setId(mAuth.getUid());
+                    farmer.setAadhaarNo(aadhaarNo);
+                    farmer.setEmail(email);
+
+                    data.getFarmersList().add(farmer);
+
+                    CollectionReference dbUsers = db.collection("Agri");
+                    dbUsers.document("Farmers").set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            //here is where we go into the app
+                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "Sign Up Failed, Try Again " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+
             }
         });
+    }
+
+    private boolean isValidEmail(String target) {
+        if (target == null) {
+            return false;
+        } else {
+            return Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
     }
 }

@@ -19,7 +19,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
-        android:src="@drawable/logo" />
+        android:src="@drawable/farmer_logo" />
 
     <LinearLayout
         android:id="@+id/login_layout"
@@ -68,7 +68,7 @@
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:hint="@string/mobile_no"
-                android:inputType="textEmailAddress"
+                android:inputType="number"
                 android:padding="10dp"
                 android:singleLine="true"
                 android:textColor="@color/white"

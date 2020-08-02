@@ -6,11 +6,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.agri.adapters.MyCropListRVAdapter;
 import com.example.agri.pojos.Crops;
 import com.example.agri.pojos.CropsFB;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,15 +26,21 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.type.Date;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    Button addCrop;
+    Button addCropBtn;
     Context context;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     CropsFB data;
+    private RecyclerView cropRV;
+    private List<Crops> myCropList = new ArrayList<>();
+    private MyCropListRVAdapter myCropListRVAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         context = this;
 
+        cropRV = findViewById(R.id.crops_rv);
+        addCropBtn = findViewById(R.id.add_btn);
+
+        myCropListRVAdapter = new MyCropListRVAdapter(context, myCropList);
+        cropRV.setLayoutManager(new LinearLayoutManager(this));
+        cropRV.setAdapter(myCropListRVAdapter);
+        myCropListRVAdapter.notifyDataSetChanged();
+
         DocumentReference docRef = db.collection("Agri").document("Crops");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -48,6 +66,18 @@ public class MainActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         data = document.toObject(CropsFB.class);
+                        if (data == null) {
+                            data = new CropsFB();
+                            data.setCropsList(new ArrayList<Crops>());
+                        }
+                        //adding my crops to myCropsList
+                        for (Crops c : data.getCropsList()) {
+                            if (c.getSellerId().equals(mAuth.getUid())) {
+                                myCropList.add(c);
+                            }
+                        }
+                        myCropListRVAdapter.notifyDataSetChanged();
+
                     } else {
                         //Log.d(TAG, "No such document");\
                     }
@@ -62,46 +92,71 @@ public class MainActivity extends AppCompatActivity {
             data = new CropsFB();
             data.setCropsList(new ArrayList<Crops>());
         }
-        //TODO:Display Crops data on rv if crop's sellerId == mAuth.getUid()
 
-        addCrop = findViewById(R.id.add_btn);
-        addCrop.setOnClickListener(new View.OnClickListener() {
+
+        addCropBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final Dialog mDialog = new Dialog(context);
                 mDialog.setContentView(R.layout.add_crop_popup);
                 mDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 //TODO:Make edit texts and all
+                final EditText addCropDialogueCropNameET = mDialog.findViewById(R.id.cropname);
+                final EditText addCropDialogueTotalQuantityET = findViewById(R.id.totalQuantity);
+                final EditText addCropDialogueDateET = findViewById(R.id.expectedDate);
                 Button addBtn = mDialog.findViewById(R.id.add_btn);
                 addBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Crops crop = new Crops();
-                        //TODO:add taken data here!!
-                        crop.setCropName("");
-                        crop.setExpectedDate(null);
-                        crop.setTotalQuantity(0);
-                        crop.setRemainingQuantity(0);
-                        crop.setOrganic(false);
-                        crop.setPrice(0);
+                        String cropName = addCropDialogueCropNameET.getText().toString();
+                        String totalQuantity = addCropDialogueTotalQuantityET.getText().toString();
+                        String expectedDate = addCropDialogueDateET.getText().toString();
 
-                        crop.setSellerId(mAuth.getUid());
-                        crop.setCropId(mAuth.getUid() + crop.getCropName());
-                        data.getCropsList().add(crop);
+                        if (cropName.length() == 0 || cropName.trim().length() == 0) {
+                            Toast.makeText(context, "Please enter your crop's name", Toast.LENGTH_SHORT).show();
+                        } else if (totalQuantity.length() == 0 || totalQuantity.trim().length() == 0) {
+                            Toast.makeText(context, "Please enter total quantity of your crop", Toast.LENGTH_SHORT).show();
+                        } else if (expectedDate.length() == 0 || expectedDate.trim().length() == 0) {
+                            Toast.makeText(context, "Please enter your expected date of crop", Toast.LENGTH_SHORT).show();
+                        } else if (Integer.parseInt(totalQuantity) <= 0) {
+                            Toast.makeText(context, "Total quantity must be greater than zero", Toast.LENGTH_SHORT).show();
+                        }
+                        //TODO:check if entered date is greater than current date or open datepicker to avoid all this
+                        else {
+                            Crops crop = new Crops();
+                            //TODO:add taken data here!!
+                            Date cropExpectedDate = Date.newBuilder()
+                                    .setDay(Integer.parseInt(expectedDate.substring(0, 2)))
+                                    .setMonth(Integer.parseInt(expectedDate.substring(3, 5)))
+                                    .setYear(Integer.parseInt(expectedDate.substring(6)))
+                                    .build();
 
-                        CollectionReference dbUsers = db.collection("Agri");
-                        dbUsers.document("Crops").set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                //TODO:refresh recycler view
-                                Toast.makeText(MainActivity.this, "Crop Added Successfully!", Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getApplicationContext(), "Failed To Upload!, Try Again!" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                            crop.setCropName(cropName);
+                            crop.setExpectedDate(cropExpectedDate);
+                            crop.setTotalQuantity(Integer.parseInt(totalQuantity));
+                            crop.setRemainingQuantity(0);
+                            crop.setOrganic(false);
+                            crop.setPrice(0);
+
+                            crop.setSellerId(mAuth.getUid());
+                            crop.setCropId(mAuth.getUid() + crop.getCropName());
+                            data.getCropsList().add(crop);
+
+                            CollectionReference dbUsers = db.collection("Agri");
+                            dbUsers.document("Crops").set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    //TODO:refresh recycler view
+                                    myCropListRVAdapter.notifyDataSetChanged();
+                                    Toast.makeText(MainActivity.this, "Crop Added Successfully!", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), "Failed To Upload!, Try Again!" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
                 });
             }

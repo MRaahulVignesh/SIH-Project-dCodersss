@@ -19,4 +19,8 @@
     <string name="reqCode">Request Code</string>
     <string name="add_crop">Add Crop</string>
     <string name="add">Add</string>
+    <string name="aadhar_card_no">Aadhar Card No.</string>
+    <string name="email_if_available">Email if Available</string>
+    <string name="continue_btn">Continue</string>
+    <string name="location">Location</string>
 </resources>
