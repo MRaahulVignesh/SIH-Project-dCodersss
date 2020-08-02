@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
                             dbUsers.document("Crops").set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    myCropListRVAdapter.notifyDataSetChanged();
                                     Toast.makeText(MainActivity.this, "Crop Added Successfully!", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -158,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Failed To Upload!, Try Again!" + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
+                            
+                            myCropListRVAdapter.notifyDataSetChanged();
+                            mDialog.hide();
                         }
                     }
                 });

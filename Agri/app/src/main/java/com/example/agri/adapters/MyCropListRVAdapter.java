@@ -39,10 +39,10 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
         final Crops crop = cropsList.get(position);
         holder.cropNameTV.setText(crop.getCropName());
         holder.cropExpectedDateTV.setText(crop.getExpectedDate().toString());
-        holder.cropTotalQuantityTV.setText(crop.getTotalQuantity());
-        holder.cropRemainingQuantityTV.setText(crop.getRemainingQuantity());
+        holder.cropTotalQuantityTV.setText(crop.getTotalQuantity() + "");
+        holder.cropRemainingQuantityTV.setText(crop.getRemainingQuantity() + "");
         holder.cropIsOrganicTV.setText(crop.getOrganic().toString());
-        holder.cropPriceTV.setText(crop.getPrice());
+        holder.cropPriceTV.setText(crop.getPrice() + "");
 
         holder.parentRL.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +69,7 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
             this.parentRL = itemView.findViewById(R.id.crop_list_item_parent_rl);
             this.cropNameTV = itemView.findViewById(R.id.mu_crop_name);
             this.cropExpectedDateTV = itemView.findViewById(R.id.my_crop_expected_date);
-            this.cropTotalQuantityTV = itemView.findViewById(R.id.totalQuantity);
+            this.cropTotalQuantityTV = itemView.findViewById(R.id.my_crop_total_quantity);
             this.cropRemainingQuantityTV = itemView.findViewById(R.id.my_crop_remaining_quantity);
             this.cropIsOrganicTV = itemView.findViewById(R.id.my_crop_isOrganic);
             this.cropPriceTV = itemView.findViewById(R.id.my_crop_price);
