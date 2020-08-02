@@ -18,8 +18,6 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { mainListItems, secondaryListItems } from './listItems';
-import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders2 from './Orders2';
 import ListItem from '@material-ui/core/ListItem';
@@ -37,6 +35,7 @@ import CompanyTransaction from '../Components/CompanyTransaction'
 import CompanyDashboard from './CompanyDashboard';
 import GovtDashboard from './GovtDashboard';
 import Listed from '../Components/Listed';
+import Chart2 from './Chart2';
 
 const drawerWidth = 240;
 
@@ -205,7 +204,7 @@ export default function Dashboard() {
               {/* Chart */}
               <Grid item xs={12} md={8} lg={9}>
                 <Paper className={fixedHeightPaper}>
-                  <Chart />
+                  <Chart2 />
                 </Paper>
               </Grid>
               {/* Recent Deposits */}
