@@ -6,11 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -53,7 +53,6 @@ public class CropDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crop_details);
         context = this;
         db = FirebaseFirestore.getInstance();
-
         mStorage = FirebaseStorage.getInstance().getReference();
 
         uploadNewImageBtn = findViewById(R.id.upload_new_image_btn);
@@ -68,22 +67,18 @@ public class CropDetailsActivity extends AppCompatActivity {
         expectedDateTV = findViewById(R.id.crop_expected_date);
         deliveredTV = findViewById(R.id.crop_delivered);
 
-
         crop = (Crops) getIntent().getSerializableExtra("crop");
 
         if (crop != null) {
-            cropNameTV.setText(crop.getCropName());
-            cropIdTV.setText(crop.getCropId());
-            totalQuantityTV.setText(crop.getTotalQuantity() + "");
-            remainingQuantityTV.setText(crop.getRemainingQuantity() + "");
-            priceTV.setText(crop.getPrice() + "");
-            organicTV.setText("IsOrganic " + crop.getOrganic().toString());
-            sellerIdTV.setText(crop.getSellerId());
-            expectedDateTV.setText(crop.getExpectedDate());
-            deliveredTV.setText("delivered " + (crop.getDelivered() != null ? crop.getDelivered().toString() : false));
-            Picasso.get().load(crop.getImageURL())
-                    .centerCrop()
-                    .into(cropImageView);
+            cropNameTV.setText(styleString("Crop Name:", crop.getCropName()));
+            cropIdTV.setText(styleString("Crop Id:", crop.getCropId()));
+            totalQuantityTV.setText(styleString("Total Quantity:", crop.getTotalQuantity() + ""));
+            remainingQuantityTV.setText(styleString("Unsold Stock:", crop.getRemainingQuantity() + ""));
+            priceTV.setText(styleString("Unit Price:", crop.getPrice() + ""));
+            organicTV.setText(styleString("Organic:", crop.getOrganic().toString()));
+            sellerIdTV.setText(styleString("Seller Id:", crop.getSellerId()));
+            expectedDateTV.setText(styleString("Expected Date:", crop.getExpectedDate().substring(31)));
+            deliveredTV.setText(styleString("Delivered:", (crop.getDelivered() != null ? "Yea" : "No")));
         }
 
         mProgress = new ProgressDialog(this);
@@ -102,6 +97,9 @@ public class CropDetailsActivity extends AppCompatActivity {
             }
         });
 
+        if (crop.getImageURL() != null && crop.getImageURL().trim().length() != 0) {
+            showBitmapImageIntoCropImageView();
+        }
     }
 
     @Override
@@ -122,46 +120,13 @@ public class CropDetailsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
             mProgress.setMessage("Uploading image...");
             mProgress.show();
-//            uncomment to use the compression
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            cropImageView.setImageBitmap(imageBitmap);
-//            encodeBitmapAndSaveToFirebase(imageBitmap);
 
-
-            Uri uri = data.getData();
-            cropImageView.setImageURI(uri);
-
-            StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId() + crop.getCropName() + uri.getLastPathSegment());
-            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    mProgress.dismiss();
-                    Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-
-                    Uri imageURL = taskSnapshot.getUploadSessionUri();
-
-                    if (imageURL != null) {
-                        crop.setImageURL(imageURL.toString());
-                        updateImageURLInDatabase();
-
-                        Picasso.get().load(imageURL)
-                                .centerCrop()
-                                .into(cropImageView);
-                    } else {
-                        Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    mProgress.dismiss();
-                    Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
-                }
-            });
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            cropImageView.setImageBitmap(imageBitmap);
+            encodeBitmapAndSaveToFirebase(imageBitmap);
         }
     }
 
@@ -189,15 +154,20 @@ public class CropDetailsActivity extends AppCompatActivity {
 
     private void encodeBitmapAndSaveToFirebase(final Bitmap imageBitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId() + crop.getCropName());
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        final StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId());
         filepath.putBytes(baos.toByteArray()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 mProgress.dismiss();
                 Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                crop.setImageURL(taskSnapshot.getUploadSessionUri().toString());
-                showBitmapImageIntoCropImageView();
+                filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        crop.setImageURL(uri.toString());
+                        updateImageURLInDatabase();
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -209,19 +179,14 @@ public class CropDetailsActivity extends AppCompatActivity {
     }
 
     private void showBitmapImageIntoCropImageView() {
-        if (!"crop.getImageUrl()".contains("http")) {
-            Bitmap imageBitmap = decodeFromFirebaseBase64(crop.getImageURL());
-            cropImageView.setImageBitmap(imageBitmap);
-        } else {
-            Picasso.get()
-                    .load(crop.getImageURL())
-                    .centerCrop()
-                    .into(cropImageView);
-        }
+        Picasso.get()
+                .load(crop.getImageURL())
+                .into(cropImageView);
     }
 
-    private Bitmap decodeFromFirebaseBase64(String image) {
-        byte[] decodedByteArray = android.util.Base64.decode(image, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+    private Spanned styleString(String a, String b) {
+        String sourceString = "<b>" + a + "</b> " + b;
+        return (Html.fromHtml(sourceString));
     }
+
 }

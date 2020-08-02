@@ -2,6 +2,8 @@ package com.example.agri.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,18 +39,17 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
     @Override
     public void onBindViewHolder(@NonNull MyCropItemViewHolder holder, int position) {
         final Crops crop = cropsList.get(position);
-        holder.cropNameTV.setText(crop.getCropName());
-        holder.cropExpectedDateTV.setText(crop.getExpectedDate().toString());
-        holder.cropTotalQuantityTV.setText(crop.getTotalQuantity() + "");
-        holder.cropRemainingQuantityTV.setText(crop.getRemainingQuantity() + "");
-        holder.cropIsOrganicTV.setText(crop.getOrganic().toString());
-        holder.cropPriceTV.setText(crop.getPrice() + "");
+        holder.cropNameTV.setText(styleString("Crop:", crop.getCropName()));
+        holder.cropExpectedDateTV.setText(styleString("Expected harvest:", crop.getExpectedDate().substring(31)));
+        holder.cropTotalQuantityTV.setText(styleString("Total Stock:", crop.getTotalQuantity().toString()));
+        holder.cropRemainingQuantityTV.setText(styleString("Unsold:", crop.getRemainingQuantity().toString()));
+        holder.cropIsOrganicTV.setText(styleString("Organic:", crop.getOrganic() ? "Yes" : "No"));
+        holder.cropPriceTV.setText(styleString("Unit Price:", crop.getPrice().toString()));
 
         holder.parentRL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CropDetailsActivity.class);
-                //TODO:pass crop into intent
                 intent.putExtra("crop", crop);
                 context.startActivity(intent);
             }
@@ -74,5 +75,10 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
             this.cropIsOrganicTV = itemView.findViewById(R.id.my_crop_isOrganic);
             this.cropPriceTV = itemView.findViewById(R.id.my_crop_price);
         }
+    }
+
+    private Spanned styleString(String a, String b) {
+        String sourceString = "<b>" + a + "</b> " + b;
+        return (Html.fromHtml(sourceString));
     }
 }
