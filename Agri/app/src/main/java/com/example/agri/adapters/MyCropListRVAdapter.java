@@ -2,6 +2,7 @@ package com.example.agri.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,18 +38,17 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
     @Override
     public void onBindViewHolder(@NonNull MyCropItemViewHolder holder, int position) {
         final Crops crop = cropsList.get(position);
-        holder.cropNameTV.setText("Crop: " + crop.getCropName());
-        holder.cropExpectedDateTV.setText("Expected harvest: " + crop.getExpectedDate().substring(31));
-        holder.cropTotalQuantityTV.setText("Total Stock: " + crop.getTotalQuantity() + "");
-        holder.cropRemainingQuantityTV.setText("Unsold: " + crop.getRemainingQuantity() + "");
-        holder.cropIsOrganicTV.setText("Organic: " + crop.getOrganic().toString());
-        holder.cropPriceTV.setText("Unit Price: " + crop.getPrice() + "");
+        holder.cropNameTV.setText(styleString("Crop:", crop.getCropName()));
+        holder.cropExpectedDateTV.setText(styleString("Expected harvest:", crop.getExpectedDate().substring(31)));
+        holder.cropTotalQuantityTV.setText(styleString("Total Stock:", crop.getTotalQuantity().toString()));
+        holder.cropRemainingQuantityTV.setText(styleString("Unsold:", crop.getRemainingQuantity().toString()));
+        holder.cropIsOrganicTV.setText(styleString("Organic:", crop.getOrganic().toString()));
+        holder.cropPriceTV.setText(styleString("Unit Price:", crop.getPrice().toString()));
 
         holder.parentRL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CropDetailsActivity.class);
-                //TODO:pass crop into intent
                 intent.putExtra("crop", crop);
                 context.startActivity(intent);
             }
@@ -74,5 +74,10 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
             this.cropIsOrganicTV = itemView.findViewById(R.id.my_crop_isOrganic);
             this.cropPriceTV = itemView.findViewById(R.id.my_crop_price);
         }
+    }
+
+    private String styleString(String a, String b) {
+        String sourceString = "<b>" + a + "</b> " + b;
+        return (Html.fromHtml(sourceString).toString());
     }
 }
