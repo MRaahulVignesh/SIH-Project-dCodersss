@@ -100,10 +100,11 @@ public class MainActivity extends AppCompatActivity {
                 final Dialog mDialog = new Dialog(context);
                 mDialog.setContentView(R.layout.add_crop_popup);
                 mDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                //TODO:Make edit texts and all
+
                 final EditText addCropDialogueCropNameET = mDialog.findViewById(R.id.cropname);
                 final EditText addCropDialogueTotalQuantityET = findViewById(R.id.totalQuantity);
                 final EditText addCropDialogueDateET = findViewById(R.id.expectedDate);
+                final EditText unitPriceET = findViewById(R.id.unitPrice);
                 Button addBtn = mDialog.findViewById(R.id.add_btn);
                 addBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                         String cropName = addCropDialogueCropNameET.getText().toString();
                         String totalQuantity = addCropDialogueTotalQuantityET.getText().toString();
                         String expectedDate = addCropDialogueDateET.getText().toString();
+                        String unitPrice = unitPriceET.getText().toString();
 
                         if (cropName.length() == 0 || cropName.trim().length() == 0) {
                             Toast.makeText(context, "Please enter your crop's name", Toast.LENGTH_SHORT).show();
@@ -120,11 +122,12 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(context, "Please enter your expected date of crop", Toast.LENGTH_SHORT).show();
                         } else if (Integer.parseInt(totalQuantity) <= 0) {
                             Toast.makeText(context, "Total quantity must be greater than zero", Toast.LENGTH_SHORT).show();
+                        } else if (Integer.parseInt(unitPrice) <= 0) {
+                            Toast.makeText(context, "Unit price must be greater than zero", Toast.LENGTH_SHORT).show();
                         }
-                        //TODO:check if entered date is greater than current date or open datepicker to avoid all this
+                        //TODO:check if entered date is greater than current date or open date picker to avoid all this
                         else {
                             Crops crop = new Crops();
-                            //TODO:add taken data here!!
                             Date cropExpectedDate = Date.newBuilder()
                                     .setDay(Integer.parseInt(expectedDate.substring(0, 2)))
                                     .setMonth(Integer.parseInt(expectedDate.substring(3, 5)))
@@ -134,9 +137,9 @@ public class MainActivity extends AppCompatActivity {
                             crop.setCropName(cropName);
                             crop.setExpectedDate(cropExpectedDate);
                             crop.setTotalQuantity(Integer.parseInt(totalQuantity));
-                            crop.setRemainingQuantity(0);
+                            crop.setRemainingQuantity(crop.getTotalQuantity());
                             crop.setOrganic(false);
-                            crop.setPrice(0);
+                            crop.setPrice(Integer.parseInt(unitPrice));
 
                             crop.setSellerId(mAuth.getUid());
                             crop.setCropId(mAuth.getUid() + crop.getCropName());
@@ -146,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
                             dbUsers.document("Crops").set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    //TODO:refresh recycler view
                                     myCropListRVAdapter.notifyDataSetChanged();
                                     Toast.makeText(MainActivity.this, "Crop Added Successfully!", Toast.LENGTH_SHORT).show();
                                 }

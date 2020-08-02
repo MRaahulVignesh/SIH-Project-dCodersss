@@ -75,7 +75,6 @@ public class RegisterActivity extends AppCompatActivity {
         contBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO:Take inputs and verify if correct then go to main page
 
                 String aadhaarNo = aadharCardNoET.getText().toString();
                 String email = emailET.getText().toString();

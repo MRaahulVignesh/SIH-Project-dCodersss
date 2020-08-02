@@ -17,13 +17,24 @@
         android:id="@+id/cropname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Crop Name" />
+        android:autofillHints=""
+        android:hint="@string/crop_name"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/totalQuantity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Total Quantity"
+        android:hint="@string/total_quantity"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/unitPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/unit_price"
+        android:importantForAutofill="no"
         android:inputType="numberDecimal" />
 
     <!-->TODO: Add crop organic or not and delivered optical effects <!-->
@@ -32,7 +43,8 @@
         android:id="@+id/expectedDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Date"
+        android:autofillHints=""
+        android:hint="@string/date"
         android:inputType="date" />
 
     <Button
