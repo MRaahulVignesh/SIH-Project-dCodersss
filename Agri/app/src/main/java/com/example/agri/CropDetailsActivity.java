@@ -65,7 +65,7 @@ public class CropDetailsActivity extends AppCompatActivity {
         priceTV = findViewById(R.id.crop_price);
         organicTV = findViewById(R.id.crop_isOrganic);
         sellerIdTV = findViewById(R.id.crop_seller_id);
-        expectedDateTV = findViewById(R.id.my_crop_expected_date);
+        expectedDateTV = findViewById(R.id.crop_expected_date);
         deliveredTV = findViewById(R.id.crop_delivered);
 
 
@@ -74,29 +74,30 @@ public class CropDetailsActivity extends AppCompatActivity {
         if (crop != null) {
             cropNameTV.setText(crop.getCropName());
             cropIdTV.setText(crop.getCropId());
-            totalQuantityTV.setText(crop.getTotalQuantity());
-            remainingQuantityTV.setText(crop.getRemainingQuantity());
-            priceTV.setText(crop.getPrice());
+            totalQuantityTV.setText(crop.getTotalQuantity() + "");
+            remainingQuantityTV.setText(crop.getRemainingQuantity() + "");
+            priceTV.setText(crop.getPrice() + "");
             organicTV.setText("IsOrganic " + crop.getOrganic().toString());
             sellerIdTV.setText(crop.getSellerId());
             expectedDateTV.setText(crop.getExpectedDate());
-            deliveredTV.setText("delivered " + crop.getDelivered().toString());
+            deliveredTV.setText("delivered " + (crop.getDelivered() != null ? crop.getDelivered().toString() : false));
             Picasso.get().load(crop.getImageURL())
                     .centerCrop()
                     .into(cropImageView);
         }
-
 
         mProgress = new ProgressDialog(this);
 
         uploadNewImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
                 } else {
-                    ActivityCompat.requestPermissions(CropDetailsActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+                    ActivityCompat.requestPermissions(CropDetailsActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_PERMISSION_REQUEST_CODE);
                 }
             }
         });
@@ -108,7 +109,9 @@ public class CropDetailsActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case CAMERA_PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
                 }
