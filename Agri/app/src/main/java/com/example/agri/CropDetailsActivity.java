@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -82,7 +81,6 @@ public class CropDetailsActivity extends AppCompatActivity {
             expectedDateTV.setText(crop.getExpectedDate());
             deliveredTV.setText("delivered " + (crop.getDelivered() != null ? crop.getDelivered().toString() : false));
             Picasso.get().load(crop.getImageURL())
-                    .centerCrop()
                     .into(cropImageView);
         }
 
@@ -125,43 +123,41 @@ public class CropDetailsActivity extends AppCompatActivity {
 
             mProgress.setMessage("Uploading image...");
             mProgress.show();
-//            uncomment to use the compression
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            cropImageView.setImageBitmap(imageBitmap);
-//            encodeBitmapAndSaveToFirebase(imageBitmap);
 
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            cropImageView.setImageBitmap(imageBitmap);
+            encodeBitmapAndSaveToFirebase(imageBitmap);
 
-            Uri uri = data.getData();
-            cropImageView.setImageURI(uri);
-
-            StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId() + crop.getCropName() + uri.getLastPathSegment());
-            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    mProgress.dismiss();
-                    Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-
-                    Uri imageURL = taskSnapshot.getUploadSessionUri();
-
-                    if (imageURL != null) {
-                        crop.setImageURL(imageURL.toString());
-                        updateImageURLInDatabase();
-
-                        Picasso.get().load(imageURL)
-                                .centerCrop()
-                                .into(cropImageView);
-                    } else {
-                        Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    mProgress.dismiss();
-                    Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
-                }
-            });
+//            Uri uri = data.getData();
+//            cropImageView.setImageURI(uri);
+//
+//            StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId() + crop.getCropName());
+//            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    mProgress.dismiss();
+//                    Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+//
+//                    Uri imageURL = taskSnapshot.getUploadSessionUri();
+//
+//                    if (imageURL != null) {
+//                        crop.setImageURL(imageURL.toString());
+//                        updateImageURLInDatabase();
+//
+//                        Picasso.get().load(imageURL)
+//                                .into(cropImageView);
+//                    } else {
+//                        Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    mProgress.dismiss();
+//                    Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
+//                }
+//            });
         }
     }
 
@@ -196,6 +192,7 @@ public class CropDetailsActivity extends AppCompatActivity {
                 mProgress.dismiss();
                 Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
                 crop.setImageURL(taskSnapshot.getUploadSessionUri().toString());
+                updateImageURLInDatabase();
                 showBitmapImageIntoCropImageView();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -208,13 +205,13 @@ public class CropDetailsActivity extends AppCompatActivity {
     }
 
     private void showBitmapImageIntoCropImageView() {
-        if (!"crop.getImageUrl()".contains("http")) {
-            Bitmap imageBitmap = decodeFromFirebaseBase64(crop.getImageURL());
-            cropImageView.setImageBitmap(imageBitmap);
-        } else {
+//        if (!"crop.getImageUrl()".contains("http")) {
+//            Bitmap imageBitmap = decodeFromFirebaseBase64(crop.getImageURL());
+//            cropImageView.setImageBitmap(imageBitmap);
+//        } else
+        {
             Picasso.get()
                     .load(crop.getImageURL())
-                    .centerCrop()
                     .into(cropImageView);
         }
     }
