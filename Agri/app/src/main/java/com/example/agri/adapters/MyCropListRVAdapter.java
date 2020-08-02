@@ -3,6 +3,7 @@ package com.example.agri.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
         holder.cropExpectedDateTV.setText(styleString("Expected harvest:", crop.getExpectedDate().substring(31)));
         holder.cropTotalQuantityTV.setText(styleString("Total Stock:", crop.getTotalQuantity().toString()));
         holder.cropRemainingQuantityTV.setText(styleString("Unsold:", crop.getRemainingQuantity().toString()));
-        holder.cropIsOrganicTV.setText(styleString("Organic:", crop.getOrganic().toString()));
+        holder.cropIsOrganicTV.setText(styleString("Organic:", crop.getOrganic() ? "Yes" : "No"));
         holder.cropPriceTV.setText(styleString("Unit Price:", crop.getPrice().toString()));
 
         holder.parentRL.setOnClickListener(new View.OnClickListener() {
@@ -76,8 +77,8 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
         }
     }
 
-    private String styleString(String a, String b) {
+    private Spanned styleString(String a, String b) {
         String sourceString = "<b>" + a + "</b> " + b;
-        return (Html.fromHtml(sourceString).toString());
+        return (Html.fromHtml(sourceString));
     }
 }

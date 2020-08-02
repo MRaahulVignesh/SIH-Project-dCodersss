@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -71,13 +72,13 @@ public class CropDetailsActivity extends AppCompatActivity {
         if (crop != null) {
             cropNameTV.setText(styleString("Crop Name:", crop.getCropName()));
             cropIdTV.setText(styleString("Crop Id:", crop.getCropId()));
-            totalQuantityTV.setText(styleString("Total Quantity", crop.getTotalQuantity() + ""));
-            remainingQuantityTV.setText(styleString("Unsold Stock", crop.getRemainingQuantity() + ""));
+            totalQuantityTV.setText(styleString("Total Quantity:", crop.getTotalQuantity() + ""));
+            remainingQuantityTV.setText(styleString("Unsold Stock:", crop.getRemainingQuantity() + ""));
             priceTV.setText(styleString("Unit Price:", crop.getPrice() + ""));
             organicTV.setText(styleString("Organic:", crop.getOrganic().toString()));
             sellerIdTV.setText(styleString("Seller Id:", crop.getSellerId()));
             expectedDateTV.setText(styleString("Expected Date:", crop.getExpectedDate().substring(31)));
-            deliveredTV.setText(styleString("Delivered ", (crop.getDelivered() != null ? "Yea" : "No")));
+            deliveredTV.setText(styleString("Delivered:", (crop.getDelivered() != null ? "Yea" : "No")));
         }
 
         mProgress = new ProgressDialog(this);
@@ -182,9 +183,9 @@ public class CropDetailsActivity extends AppCompatActivity {
                 .into(cropImageView);
     }
 
-    private String styleString(String a, String b) {
+    private Spanned styleString(String a, String b) {
         String sourceString = "<b>" + a + "</b> " + b;
-        return (Html.fromHtml(sourceString).toString());
+        return (Html.fromHtml(sourceString));
     }
 
 }
