@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { GridList } from 'material-ui';
-import { GridListTile, ListSubheader } from '@material-ui/core';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import fire, { db } from '../../Config/fire.js';
-import Typography from 'material-ui/styles/typography';
-
+import GridList from '@material-ui/core/GridList';
+import { GridListTile, ListSubheader } from '@material-ui/core';
+import { GridListTileBar } from '@material-ui/core';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 class Listed extends Component {
 
     constructor(props) {
@@ -28,14 +26,16 @@ class Listed extends Component {
     }
     componentDidMount() {
         db.collection('Agri').doc('Crops').get().then(doc => {
+            const d = doc.data();
+            console.log(d.cropsList)
             this.setState({
-                data: doc.data(),
+                data: doc.data().cropsList,
                 isLoading: true,
                 isError: false,
             });
+            console.log(this.state.data)
 
-
-        }).then(() => {
+        }).then((data) => {
             console.log("Document successfully written!");
             this.setState({
                 isLoading: false,
@@ -51,6 +51,7 @@ class Listed extends Component {
     }
 
     render() {
+        const { classes} = this.props;
         return (
             <div>
                 <GridList cellHeight={180} >
@@ -58,7 +59,7 @@ class Listed extends Component {
                         <ListSubheader component="div">Crops availability</ListSubheader>
                     </GridListTile>
                     {this.state.data.map((tile) => (
-                        <GridListTile key={tile.cropId}>
+                        <GridListTile key={tile.imageURL}>
                             <img src={tile.imageURL} alt={tile.cropName} />
                             <GridListTileBar
                                 title={tile.cropName}
