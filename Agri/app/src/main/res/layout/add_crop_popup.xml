@@ -11,9 +11,20 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/add_crop"
-        android:textSize="18sp" />
+        android:layout_margin="8dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary" />
 
     <EditText
+        android:drawableStart="@drawable/ic_local_florist_black_24dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:padding="10dp"
         android:id="@+id/cropname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,6 +33,10 @@
         android:inputType="text" />
 
     <EditText
+        android:drawableStart="@drawable/ic_equalizer_black_24dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:padding="10dp"
         android:id="@+id/totalQuantity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,6 +45,10 @@
         android:inputType="numberDecimal" />
 
     <EditText
+        android:drawableStart="@drawable/ic_account_balance_wallet_black_24dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:padding="10dp"
         android:id="@+id/unitPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,6 +59,10 @@
     <!-->TODO: Add crop organic or not and delivered optical effects <!-->
 
     <EditText
+        android:drawableStart="@drawable/ic_today_black_24dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:padding="10dp"
         android:id="@+id/expectedDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
