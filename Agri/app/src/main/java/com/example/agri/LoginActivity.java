@@ -137,12 +137,12 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.getResult().getAdditionalUserInfo().isNewUser()) {
                         //New user, take to registration page
                         Intent out = new Intent(LoginActivity.this, RegisterActivity.class);
+                        out.putExtra("MobNo", phoneNo);
                         startActivity(out);
                         finish();
                     } else {
                         //Take to main page
                         Intent out = new Intent(LoginActivity.this, MainActivity.class);
-                        out.putExtra("MobNo", phoneNo);
                         startActivity(out);
                         finish();
                     }
