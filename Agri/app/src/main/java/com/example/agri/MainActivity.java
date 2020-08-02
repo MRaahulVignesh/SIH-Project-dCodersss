@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public static CropsFB data;
     private RecyclerView cropRV;
     public static List<Crops> myCropList = new ArrayList<>();
-    private MyCropListRVAdapter myCropListRVAdapter;
+    public static MyCropListRVAdapter myCropListRVAdapter;
 
 
     @Override

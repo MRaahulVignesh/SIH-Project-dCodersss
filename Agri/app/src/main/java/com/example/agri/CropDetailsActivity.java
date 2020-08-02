@@ -173,6 +173,7 @@ public class CropDetailsActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 mProgress.dismiss();
+                MainActivity.myCropListRVAdapter.notifyDataSetChanged();
                 Toast.makeText(CropDetailsActivity.this, "Image URL updated Successfully!", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
