@@ -88,8 +88,8 @@ export default function SignInSide() {
         :
         <div></div>
       }
-      {govt?<Redirect to="/govtdashboard"/>:<div></div>}
-      {notgovt?<Redirect to="/companydashboard"/>:<div></div>}
+      {govt?<Redirect to={{pathname:"/govtdashboard", state:{ welcome: true}}}/>:<div></div>}
+      {notgovt?<Redirect to={{pathname:"/companydashboard", state:{ welcome:true}}}/>:<div></div>}
       {loading?<CircularProgress style={{position:"absolute",top:"40vh",left:"48vw"}}/>:<div></div>}
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
