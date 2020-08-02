@@ -12,7 +12,10 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-
+import fire, { db } from '/home/ark/Downloads/sih_frontend/sih_frontend/src/Config/fire.js';
+import { CircularProgress } from '@material-ui/core';
+import { Redirect } from 'react-router-dom';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,83 +53,106 @@ export default function SignInSide() {
   const [values, setValues] = useState({
     email: "",
     password: "",
-    govt:false
+    loading: false,
+    govt:false,
+    notgovt:false,
+    error:false
   });
 
-  const {email,password,govt} = values;
+  const {email,password,loading,govt,notgovt,error} = values;
   const handleChange = name => event => {
     setValues({ ...values,[name]: event.target.value });
   };
   const login = (e) => {
-    alert("works")
+    e.preventDefault();
+    setValues({ ...values,loading:true,error:false});
+    fire.auth().signInWithEmailAndPassword(email, password).then((u)=>{console.log(u.user.uid)
+                                                                      db.collection("buyer").doc(u.user.uid).get().then(doc => {
+                                                                        const data = doc.data();
+                                                                        console.log(data);
+                                                                        if(data.govt === true)
+                                                                          setValues({ ...values,govt:true})
+                                                                        else
+                                                                          setValues({ ...values,notgovt:true})
+                                                                      })
+                                                                      setValues({ ...values,loading:false});
+    }).catch((error) => {
+        console.log(error);
+        setValues({ ...values,loading:false,error:true});
+      });
   }
   return (
-    <Grid container component="main" className={classes.root}>
-      <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={handleChange("email")}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={handleChange("password")}
-            />
-            <FormControlLabel
-              onChange={(e) => {setValues({...values,govt:true})}}
-              control={<Checkbox value="remember" color="primary" />}
-              label="Govt. of India employee"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={(e) => login(e)}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
+    <div>
+      {error?
+        <Alert severity="error">Invalid Credentials! Please try again</Alert>
+        :
+        <div></div>
+      }
+      {govt?<Redirect to="/govtdashboard"/>:<div></div>}
+      {notgovt?<Redirect to="/companydashboard"/>:<div></div>}
+      {loading?<CircularProgress style={{position:"absolute",top:"40vh",left:"48vw"}}/>:<div></div>}
+      <Grid container component="main" className={classes.root}>
+        <CssBaseline />
+        <Grid item xs={false} sm={4} md={7} className={classes.image} />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <form className={classes.form} noValidate>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                onChange={handleChange("email")}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={handleChange("password")}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={(e) => login(e)}
+              >
+                Sign In
+              </Button>
+              <Grid container>
+                <Grid item xs>
+                  <Link href="#" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link href="/register" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-          </form>
-        </div>
+            </form>
+          </div>
+        </Grid>
       </Grid>
-    </Grid>
+    </div>
   );
 }

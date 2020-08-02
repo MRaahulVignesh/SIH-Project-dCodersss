@@ -12,6 +12,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import fire, { db } from  '/home/ark/Downloads/sih_frontend/sih_frontend/src/Config/fire.js';
+import { CircularProgress } from '@material-ui/core';
+import { Redirect } from 'react-router-dom';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,17 +44,41 @@ export default function SignUp() {
       lname: "",
       email: "",
       password: "",
-      govt:false
+      loading: false,
+      govt:false,
+      submit: false,
+      error: false
   });
 
-  const {fname,lname,email,password,govt} = values;
+  const {fname,lname,email,password,loading,govt,submit,error} = values;
   const handleChange = name => event => {
     setValues({ ...values,[name]: event.target.value });
   };
   const register = (e) => {
-    alert("works")
+    e.preventDefault();
+    setValues({ ...values,loading:true,error:false});
+    fire.auth().createUserWithEmailAndPassword(email, password).then((u)=>{db.collection("buyer").doc(u.user.uid).set({
+      fname:fname,lname:lname,email:email,govt:govt}).then(function() {
+        console.log("Document successfully written!");
+        setValues({ ...values,loading:false,submit:true});
+    })
+    .catch(function(error) {
+        console.error("Error writing document: ", error);
+        setValues({ ...values,loading:false,error:true});
+    });})
+    .catch((error) => {
+        console.log(error);
+      })
   }
   return (
+    <div>
+      {error?
+        <Alert severity="error">Please try again</Alert>
+        :
+        <div></div>
+      }
+      {submit?<Redirect to="/login"/>:<div></div>}
+      {loading?<CircularProgress style={{position:"absolute",top:"40vh",left:"48vw"}}/>:<div></div>}
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
@@ -121,7 +149,6 @@ export default function SignUp() {
             </Grid>
           </Grid>
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
@@ -140,5 +167,6 @@ export default function SignUp() {
         </form>
       </div>
     </Container>
+    </div>
   );
 }
