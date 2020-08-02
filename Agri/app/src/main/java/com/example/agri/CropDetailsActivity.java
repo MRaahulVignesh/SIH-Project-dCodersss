@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -52,7 +53,6 @@ public class CropDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crop_details);
         context = this;
         db = FirebaseFirestore.getInstance();
-
         mStorage = FirebaseStorage.getInstance().getReference();
 
         uploadNewImageBtn = findViewById(R.id.upload_new_image_btn);
@@ -67,7 +67,6 @@ public class CropDetailsActivity extends AppCompatActivity {
         expectedDateTV = findViewById(R.id.crop_expected_date);
         deliveredTV = findViewById(R.id.crop_delivered);
 
-
         crop = (Crops) getIntent().getSerializableExtra("crop");
 
         if (crop != null) {
@@ -79,9 +78,7 @@ public class CropDetailsActivity extends AppCompatActivity {
             organicTV.setText("IsOrganic " + crop.getOrganic().toString());
             sellerIdTV.setText(crop.getSellerId());
             expectedDateTV.setText(crop.getExpectedDate());
-            deliveredTV.setText("delivered " + (crop.getDelivered() != null ? crop.getDelivered().toString() : false));
-            Picasso.get().load(crop.getImageURL())
-                    .into(cropImageView);
+            deliveredTV.setText("Delivered " + (crop.getDelivered() != null ? crop.getDelivered().toString() : false));
         }
 
         mProgress = new ProgressDialog(this);
@@ -100,6 +97,9 @@ public class CropDetailsActivity extends AppCompatActivity {
             }
         });
 
+        if (crop.getImageURL() != null && crop.getImageURL().trim().length() != 0) {
+            showBitmapImageIntoCropImageView();
+        }
     }
 
     @Override
@@ -120,7 +120,6 @@ public class CropDetailsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
             mProgress.setMessage("Uploading image...");
             mProgress.show();
 
@@ -128,34 +127,36 @@ public class CropDetailsActivity extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             cropImageView.setImageBitmap(imageBitmap);
             encodeBitmapAndSaveToFirebase(imageBitmap);
-
-//            Uri uri = data.getData();
-//            cropImageView.setImageURI(uri);
 //
-//            StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId() + crop.getCropName());
+//            Uri uri = data.getData();
+//            Picasso.get().load(uri)
+//                    .into(cropImageView);
+////            cropImageView.setImageURI(uri);
+//
+//            final StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId());
 //            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 //                @Override
 //                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 //                    mProgress.dismiss();
 //                    Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-//
-//                    Uri imageURL = taskSnapshot.getUploadSessionUri();
-//
-//                    if (imageURL != null) {
-//                        crop.setImageURL(imageURL.toString());
-//                        updateImageURLInDatabase();
-//
-//                        Picasso.get().load(imageURL)
-//                                .into(cropImageView);
-//                    } else {
-//                        Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
-//                    }
 //                }
 //            }).addOnFailureListener(new OnFailureListener() {
 //                @Override
 //                public void onFailure(@NonNull Exception e) {
 //                    mProgress.dismiss();
 //                    Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+
+//            filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                @Override
+//                public void onSuccess(Uri uri) {
+//                    if (uri != null) {
+//                        crop.setImageURL(uri.toString());
+//                        updateImageURLInDatabase();
+//                    } else {
+//                        Toast.makeText(context, "Something went wrong try uploading again", Toast.LENGTH_SHORT).show();
+//                    }
 //                }
 //            });
         }
@@ -184,16 +185,20 @@ public class CropDetailsActivity extends AppCompatActivity {
 
     private void encodeBitmapAndSaveToFirebase(final Bitmap imageBitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId() + crop.getCropName());
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        final StorageReference filepath = mStorage.child("CropPhotos").child(crop.getCropId());
         filepath.putBytes(baos.toByteArray()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 mProgress.dismiss();
                 Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                crop.setImageURL(taskSnapshot.getUploadSessionUri().toString());
-                updateImageURLInDatabase();
-                showBitmapImageIntoCropImageView();
+                filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        crop.setImageURL(uri.toString());
+                        updateImageURLInDatabase();
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -205,15 +210,9 @@ public class CropDetailsActivity extends AppCompatActivity {
     }
 
     private void showBitmapImageIntoCropImageView() {
-//        if (!"crop.getImageUrl()".contains("http")) {
-//            Bitmap imageBitmap = decodeFromFirebaseBase64(crop.getImageURL());
-//            cropImageView.setImageBitmap(imageBitmap);
-//        } else
-        {
-            Picasso.get()
-                    .load(crop.getImageURL())
-                    .into(cropImageView);
-        }
+        Picasso.get()
+                .load(crop.getImageURL())
+                .into(cropImageView);
     }
 
     private Bitmap decodeFromFirebaseBase64(String image) {

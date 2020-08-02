@@ -37,12 +37,12 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
     @Override
     public void onBindViewHolder(@NonNull MyCropItemViewHolder holder, int position) {
         final Crops crop = cropsList.get(position);
-        holder.cropNameTV.setText(crop.getCropName());
-        holder.cropExpectedDateTV.setText(crop.getExpectedDate().toString());
-        holder.cropTotalQuantityTV.setText(crop.getTotalQuantity() + "");
-        holder.cropRemainingQuantityTV.setText(crop.getRemainingQuantity() + "");
-        holder.cropIsOrganicTV.setText(crop.getOrganic().toString());
-        holder.cropPriceTV.setText(crop.getPrice() + "");
+        holder.cropNameTV.setText("Crop: " + crop.getCropName());
+        holder.cropExpectedDateTV.setText("Expected harvest: " + crop.getExpectedDate().substring(31));
+        holder.cropTotalQuantityTV.setText("Total Stock: " + crop.getTotalQuantity() + "");
+        holder.cropRemainingQuantityTV.setText("Unsold: " + crop.getRemainingQuantity() + "");
+        holder.cropIsOrganicTV.setText("Organic: " + crop.getOrganic().toString());
+        holder.cropPriceTV.setText("Unit Price: " + crop.getPrice() + "");
 
         holder.parentRL.setOnClickListener(new View.OnClickListener() {
             @Override
