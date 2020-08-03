@@ -1,11 +1,13 @@
 package com.example.agri;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
@@ -28,10 +30,12 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.type.Date;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     ImageButton addCropBtn;
@@ -111,6 +115,33 @@ public class MainActivity extends AppCompatActivity {
                 final Switch isOrganic = mDialog.findViewById(R.id.is_organic);
                 final Switch isDelivered = mDialog.findViewById(R.id.is_delivered);
                 Button addBtn = mDialog.findViewById(R.id.add_btn);
+
+                final Calendar myCalendar = Calendar.getInstance();
+
+                addCropDialogueDateET.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                                  int dayOfMonth) {
+                                myCalendar.set(Calendar.YEAR, year);
+                                myCalendar.set(Calendar.MONTH, monthOfYear);
+                                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                String myFormat = "dd/MM/yyyy";
+                                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+
+                                addCropDialogueDateET.setText(sdf.format(myCalendar.getTime()));
+                            }
+
+                        };
+                        new DatePickerDialog(MainActivity.this, date, myCalendar
+                                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                    }
+                });
+
                 addBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -130,17 +161,10 @@ public class MainActivity extends AppCompatActivity {
                         } else if (Integer.parseInt(unitPrice) <= 0) {
                             Toast.makeText(context, "Unit price must be greater than zero", Toast.LENGTH_SHORT).show();
                         }
-                        //TODO:check if entered date is greater than current date or open date picker to avoid all this
                         else {
                             Crops crop = new Crops();
-                            Date cropExpectedDate = Date.newBuilder()
-                                    .setDay(Integer.parseInt(expectedDate.substring(0, 2)))
-                                    .setMonth(Integer.parseInt(expectedDate.substring(3, 5)))
-                                    .setYear(Integer.parseInt(expectedDate.substring(6)))
-                                    .build();
-
                             crop.setCropName(cropName);
-                            crop.setExpectedDate(cropExpectedDate.toString());
+                            crop.setExpectedDate(expectedDate);
                             crop.setTotalQuantity(Integer.parseInt(totalQuantity));
                             crop.setRemainingQuantity(crop.getTotalQuantity());
                             crop.setOrganic(isOrganic.isChecked());

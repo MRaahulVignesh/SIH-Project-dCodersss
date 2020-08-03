@@ -57,7 +57,6 @@
         android:inputType="numberDecimal"
         android:padding="10dp" />
 
-    <!-->TODO: Add crop organic or not and delivered optical effects <!-->
 
     <EditText
         android:id="@+id/expectedDate"
@@ -70,6 +69,7 @@
         android:gravity="center_vertical"
         android:hint="@string/date"
         android:inputType="date"
+        android:focusable="false"
         android:padding="10dp" />
 
     <LinearLayout
