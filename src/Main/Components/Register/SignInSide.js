@@ -16,6 +16,7 @@ import fire,{db} from '../../../Config/fire.js';
 import { CircularProgress } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
+import { EditorFormatListBulleted } from 'material-ui/svg-icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,13 +51,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignInSide() {
   const classes = useStyles();
+  const [name, setName] = useState("")
   const [values, setValues] = useState({
     email: "",
     password: "",
     loading: false,
     govt:false,
     notgovt:false,
-    error:false
   });
 
   const {email,password,loading,govt,notgovt,error} = values;
@@ -69,7 +70,9 @@ export default function SignInSide() {
     fire.auth().signInWithEmailAndPassword(email, password).then((u)=>{console.log(u.user.uid)
                                                                       db.collection("buyer").doc(u.user.uid).get().then(doc => {
                                                                         const data = doc.data();
-                                                                        console.log(data);
+                                                                        console.log(data.fname+" "+data.lname);
+                                                                        setName(data.fname+" "+data.lname)
+                                                                        console.log(name)
                                                                         if(data.govt === true)
                                                                           setValues({ ...values,govt:true})
                                                                         else
@@ -88,8 +91,8 @@ export default function SignInSide() {
         :
         <div></div>
       }
-      {govt?<Redirect to={{pathname:"/govtdashboard", state:{ welcome: true}}}/>:<div></div>}
-      {notgovt?<Redirect to={{pathname:"/companydashboard", state:{ welcome:true}}}/>:<div></div>}
+      {govt?<Redirect to={{pathname:"/govtdashboard", state:{ welcome: true, name:name }}}/>:<div></div>}
+      {notgovt?<Redirect to={{pathname:"/companydashboard", state:{ welcome:true, name:name }}}/>:<div></div>}
       {loading?<CircularProgress style={{position:"absolute",top:"40vh",left:"48vw"}}/>:<div></div>}
       <Grid container component="main" className={classes.root}>
         <CssBaseline />

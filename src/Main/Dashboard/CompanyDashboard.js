@@ -3,11 +3,13 @@ import Dashboard2 from './Dashboard2.js'
 import Alert from '@material-ui/lab/Alert';
 class CompanyDashboard extends Component{
     state = {
-        welcome: false
+        welcome: false,
+        name: ""
     }
     componentDidMount(){
         if(typeof this.props.location.state !== "undefined"){
             this.setState({welcome:true})
+            this.setState({name:this.props.location.state.name})
         }
     }
     render(){
@@ -15,7 +17,7 @@ class CompanyDashboard extends Component{
             <div style={{overflowY:"hidden"}}>
                 {this.state.welcome?
                     <Alert variant="filled" severity="success">
-                            Welcome
+                            Welcome {this.state.name}
                     </Alert>:
                     <div></div>
                 }
