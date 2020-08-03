@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                             crop.setSellerId(mAuth.getUid());
                             crop.setCropId(mAuth.getUid() + crop.getCropName());
                             data.getCropsList().add(crop);
+                            myCropList.add(crop);
 
                             CollectionReference dbUsers = db.collection("Agri");
                             dbUsers.document("Crops").set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
