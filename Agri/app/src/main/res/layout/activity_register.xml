@@ -98,7 +98,7 @@
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:hint="@string/aadhar_card_no"
-                android:inputType="textEmailAddress"
+                android:inputType="numberDecimal"
                 android:padding="10dp"
                 android:singleLine="true"
                 android:textColor="@color/white"

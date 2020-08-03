@@ -283,7 +283,6 @@ public class CropDetailsActivity extends AppCompatActivity {
     }
 
     private void requestNewLocationData() {
-
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(3000);
@@ -295,7 +294,6 @@ public class CropDetailsActivity extends AppCompatActivity {
                 mLocationRequest, mLocationCallback,
                 Looper.myLooper()
         );
-
     }
 
     private void getLastLocation() {
