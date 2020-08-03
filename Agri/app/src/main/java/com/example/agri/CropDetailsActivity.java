@@ -12,7 +12,7 @@ import android.provider.MediaStore;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +39,7 @@ public class CropDetailsActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 100;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 200;
     private FirebaseFirestore db;
-    private Button uploadNewImageBtn;
+    private ImageButton uploadNewImageBtn;
     private ImageView cropImageView;
     private StorageReference mStorage;
     private Context context;

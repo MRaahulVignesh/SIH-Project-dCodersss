@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    Button addCropBtn;
+    ImageButton addCropBtn;
     Context context;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
@@ -106,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
                 final EditText addCropDialogueTotalQuantityET = mDialog.findViewById(R.id.totalQuantity);
                 final EditText addCropDialogueDateET = mDialog.findViewById(R.id.expectedDate);
                 final EditText unitPriceET = mDialog.findViewById(R.id.unitPrice);
+                final Switch isOrganic = mDialog.findViewById(R.id.is_organic);
+                final Switch isDelivered = mDialog.findViewById(R.id.is_delivered);
                 Button addBtn = mDialog.findViewById(R.id.add_btn);
                 addBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -139,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
                             crop.setExpectedDate(cropExpectedDate.toString());
                             crop.setTotalQuantity(Integer.parseInt(totalQuantity));
                             crop.setRemainingQuantity(crop.getTotalQuantity());
-                            crop.setOrganic(false);
-                            crop.setDelivered(false);
+                            crop.setOrganic(isOrganic.isChecked());
+                            crop.setDelivered(isDelivered.isChecked());
                             crop.setPrice(Integer.parseInt(unitPrice));
 
                             crop.setSellerId(mAuth.getUid());
