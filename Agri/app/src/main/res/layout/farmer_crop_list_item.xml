@@ -5,14 +5,12 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:elevation="4dp"
-    android:background="#00ffffff"
     android:padding="4dp"
     app:cardCornerRadius="4dp">
 
     <RelativeLayout
         android:id="@+id/crop_list_item_parent_rl"
         android:layout_width="match_parent"
-        android:background="#20ffffff"
         android:layout_height="wrap_content">
 
         <TextView
@@ -30,7 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/mu_crop_name"
-            android:textColor="@color/white"
             android:padding="1dp" />
 
         <TextView
@@ -38,7 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/my_crop_expected_date"
-            android:textColor="@color/white"
             android:padding="1dp" />
 
         <TextView
@@ -46,7 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/my_crop_total_quantity"
-            android:textColor="@color/white"
             android:padding="1dp" />
 
         <TextView
@@ -54,7 +49,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/my_crop_remaining_quantity"
-            android:textColor="@color/white"
             android:padding="1dp" />
 
         <TextView
@@ -62,7 +56,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/my_crop_isOrganic"
-            android:textColor="@color/white"
             android:padding="1dp" />
     </RelativeLayout>
 

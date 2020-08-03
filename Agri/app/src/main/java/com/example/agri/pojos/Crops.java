@@ -7,7 +7,7 @@ public class Crops implements Serializable {
     String cropName, cropId;
     Integer totalQuantity, remainingQuantity, price;
     Boolean organic;
-    String sellerId;
+    String sellerId, seller;
     String expectedDate;
     Boolean delivered;
     String imageURL;
@@ -47,7 +47,7 @@ public class Crops implements Serializable {
     public Crops() {
     }
 
-    public Crops(String cropName, String cropId, Integer totalQuantity, Integer remainingQuantity, Integer price, Boolean organic, String sellerId, String expectedDate, Boolean delivered, String imageURL) {
+    public Crops(String cropName, String cropId, Integer totalQuantity, Integer remainingQuantity, Integer price, Boolean organic, String sellerId, String seller, String expectedDate, Boolean delivered, String imageURL) {
         this.cropName = cropName;
         this.cropId = cropId;
         this.totalQuantity = totalQuantity;
@@ -55,9 +55,18 @@ public class Crops implements Serializable {
         this.price = price;
         this.organic = organic;
         this.sellerId = sellerId;
+        this.seller = seller;
         this.expectedDate = expectedDate;
         this.delivered = delivered;
         this.imageURL = imageURL;
+    }
+
+    public String getSeller() {
+        return seller;
+    }
+
+    public void setSeller(String seller) {
+        this.seller = seller;
     }
 
     public Boolean getOrganic() {
