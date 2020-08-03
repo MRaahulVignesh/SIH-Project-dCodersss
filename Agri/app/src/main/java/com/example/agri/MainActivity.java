@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                             crop.setPrice(Integer.parseInt(unitPrice));
 
                             crop.setSellerId(mAuth.getUid());
+                            crop.setSeller(mAuth.getUid());
                             crop.setCropId(mAuth.getUid() + crop.getCropName());
                             data.getCropsList().add(crop);
                             myCropList.add(crop);
