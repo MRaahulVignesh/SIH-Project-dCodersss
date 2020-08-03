@@ -40,7 +40,7 @@ public class MyCropListRVAdapter extends RecyclerView.Adapter<MyCropListRVAdapte
     public void onBindViewHolder(@NonNull MyCropItemViewHolder holder, int position) {
         final Crops crop = cropsList.get(position);
         holder.cropNameTV.setText(styleString("Crop:", crop.getCropName()));
-        holder.cropExpectedDateTV.setText(styleString("Expected harvest:", crop.getExpectedDate().substring(31)));
+        holder.cropExpectedDateTV.setText(styleString("Expected harvest:", crop.getExpectedDate()));
         holder.cropTotalQuantityTV.setText(styleString("Total Stock:", crop.getTotalQuantity().toString()));
         holder.cropRemainingQuantityTV.setText(styleString("Unsold:", crop.getRemainingQuantity().toString()));
         holder.cropIsOrganicTV.setText(styleString("Organic:", crop.getOrganic() ? "Yes" : "No"));

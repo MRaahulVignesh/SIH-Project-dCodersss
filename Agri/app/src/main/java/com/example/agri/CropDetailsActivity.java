@@ -77,7 +77,7 @@ public class CropDetailsActivity extends AppCompatActivity {
             priceTV.setText(styleString("Unit Price:", crop.getPrice() + ""));
             organicTV.setText(styleString("Organic:", crop.getOrganic().toString()));
             sellerIdTV.setText(styleString("Seller Id:", crop.getSellerId()));
-            expectedDateTV.setText(styleString("Expected Date:", crop.getExpectedDate().substring(31)));
+            expectedDateTV.setText(styleString("Expected Date:", crop.getExpectedDate()));
             deliveredTV.setText(styleString("Delivered:", (crop.getDelivered() != null ? "Yea" : "No")));
         }
 
