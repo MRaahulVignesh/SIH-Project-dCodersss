@@ -21,10 +21,8 @@ ReactDOM.render(
               <Switch>
                 <Route path="/register" component={SignUp} />
                 <Route path="/login" component={SignInSide} />
-                <Route path="/farmertransaction" component={FarmerTransaction} />
-                <Route path="/govttransactions" component={GovtTransaction} />
-                <Route path="/companytransactions" component={CompanyTransaction} />
-                <Route path="/companyTransaction" component={Intro} />
+                <Route path="/govttransaction" component={GovtTransaction} />
+                <Route path="/companytransaction" component={CompanyTransaction} />
                 <Route path="/intro" component={Intro} />
                 <Route path="/crop" component={Crop} />
                 <Route path="/main" component={Main} />

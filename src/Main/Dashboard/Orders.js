@@ -76,7 +76,7 @@ export default function Orders() {
         </TableBody>:<TableBody></TableBody>}
       </Table>
       <div className={classes.seeMore}>
-        <Link color="primary" target="_blank" href="/govttransactions">
+        <Link color="primary" target="_blank" href="/govttransaction">
           See more orders
         </Link>
       </div>
