@@ -6,9 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -26,6 +30,11 @@ import androidx.core.content.ContextCompat;
 
 import com.example.agri.pojos.Crops;
 import com.example.agri.pojos.Locations;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,6 +63,26 @@ public class CropDetailsActivity extends AppCompatActivity {
     private Crops crop;
     private Locations loc;
     private TextView cropNameTV, cropIdTV, totalQuantityTV, remainingQuantityTV, priceTV, organicTV, sellerIdTV, expectedDateTV, deliveredTV;
+
+    String lat;
+    String lon;
+    double latitude;
+    double longitude;
+    int PERMISSION_ID = 24;
+    Location mLastLocation;
+    Location location;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            mLastLocation = locationResult.getLastLocation();
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+            lat = String.valueOf(mLastLocation.getLatitude());
+            lon = String.valueOf(mLastLocation.getLongitude());
+            updateLocationInFirestore(lat, lon);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,23 +123,11 @@ public class CropDetailsActivity extends AppCompatActivity {
         uploadNewImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                ) {
+                if (checkPermissions()) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
                 } else {
-                    ActivityCompat.requestPermissions(CropDetailsActivity.this, new String[]
-                            {Manifest.permission.CAMERA,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                                    Manifest.permission.ACCESS_FINE_LOCATION}, CAMERA_PERMISSION_REQUEST_CODE);
+                    requestPermissions();
                 }
             }
         });
@@ -147,23 +164,6 @@ public class CropDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case CAMERA_PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[1] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[2] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[3] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[4] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[5] == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-                }
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -177,40 +177,22 @@ public class CropDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void updateImageURLInDatabase() {
-        for (Crops c : MainActivity.myCropList) {
-            if (c.getCropId().equals(crop.getCropId())) {
-                c.setImageURL(crop.getImageURL());
-            }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case CAMERA_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[2] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[3] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[4] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[5] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                    requestNewLocationData();
+                }
         }
-        CollectionReference dbUsers = db.collection("Agri");
-        dbUsers.document("Crops").set(MainActivity.data).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                mProgress.dismiss();
-                MainActivity.myCropListRVAdapter.notifyDataSetChanged();
-                Toast.makeText(CropDetailsActivity.this, "Image URL updated Successfully!", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Failed To Upload! Try Again!" + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        loc.setLoc(loc.getLoc() + "13.0452436,80.1986642\n");
-        CollectionReference dbU = db.collection("Locations");
-        dbU.document(FirebaseAuth.getInstance().getUid() + "").set(loc).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("locations", "LOC Success! ");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("locations", "LOC Failed! ");
-            }
-        });
     }
 
     private void encodeBitmapAndSaveToFirebase(final Bitmap imageBitmap) {
@@ -248,6 +230,127 @@ public class CropDetailsActivity extends AppCompatActivity {
     private Spanned styleString(String a, String b) {
         String sourceString = "<b>" + a + "</b> " + b;
         return (Html.fromHtml(sourceString));
+    }
+
+    private void updateImageURLInDatabase() {
+        for (Crops c : MainActivity.myCropList) {
+            if (c.getCropId().equals(crop.getCropId())) {
+                c.setImageURL(crop.getImageURL());
+            }
+        }
+        CollectionReference dbUsers = db.collection("Agri");
+        dbUsers.document("Crops").set(MainActivity.data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                mProgress.dismiss();
+                MainActivity.myCropListRVAdapter.notifyDataSetChanged();
+                Toast.makeText(CropDetailsActivity.this, "Image URL updated Successfully!", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), "Failed To Upload! Try Again!" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        getLastLocation();
+    }
+
+    private boolean checkPermissions() {
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(CropDetailsActivity.this, new String[]
+                {Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION}, CAMERA_PERMISSION_REQUEST_CODE);
+    }
+
+    private boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+                LocationManager.NETWORK_PROVIDER
+        );
+    }
+
+    private void requestNewLocationData() {
+
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(3000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient.requestLocationUpdates(
+                mLocationRequest, mLocationCallback,
+                Looper.myLooper()
+        );
+
+    }
+
+    private void getLastLocation() {
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+                fusedLocationClient.getLastLocation().addOnCompleteListener(
+                        new OnCompleteListener<Location>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Location> task) {
+                                location = task.getResult();
+                                if (location == null) {
+                                    requestNewLocationData();
+                                } else {
+                                    lat = String.valueOf(location.getLatitude());
+                                    lon = String.valueOf(location.getLongitude());
+                                    latitude = location.getLatitude();
+                                    longitude = location.getLongitude();
+                                    updateLocationInFirestore(lat, lon);
+                                }
+                            }
+                        }
+                );
+            } else {
+                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        } else {
+            requestPermissions();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (checkPermissions()) {
+            requestNewLocationData();
+        }
+
+    }
+
+    private void updateLocationInFirestore(String lat, String lon) {
+        loc.setLoc(loc.getLoc() + lat + "," + lon + "\n");
+        CollectionReference dbU = db.collection("Locations");
+        dbU.document(FirebaseAuth.getInstance().getUid() + "").set(loc).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("locations", "LOC Success! ");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("locations", "LOC Failed! ");
+            }
+        });
     }
 
 }
