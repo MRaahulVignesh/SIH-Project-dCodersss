@@ -104,7 +104,7 @@ class Listed extends Component {
                                                 {crop.cropName}
                                             </Typography>
                                             <Typography variant="body2" gutterBottom>
-                                                Expected Date: 
+                                                Expected Date: {crop.expectedDate}
                                             </Typography>
                                             <Typography variant="body2" color="subtitle1">
                                                 Organic: {crop.organic ? 'Yes' : 'No'}
@@ -119,7 +119,7 @@ class Listed extends Component {
 
                                         </Grid>
                                         <Grid item>
-                                            {crop.remainingQuantity? <Button size="small" color="primary">
+                                            {crop.remainingQuantity? <Button size="small" color="primary" onClick={()=>this.props.history.push('/buythecrop')}>
                                                 Buy Crop
                                             </Button>: <Button size="small" color="primary" disabled>
                                             Buy Crop

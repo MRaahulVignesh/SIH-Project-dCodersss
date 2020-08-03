@@ -14,6 +14,7 @@ import CompanyDashboard from './Main/Dashboard/CompanyDashboard';
 import SignInSide from './Main/Components/Register/SignInSide';
 import SignUp from './Main/Components/Register/SignUp';
 import GovtDashboard from './Main/Dashboard/GovtDashboard';
+import Buy from './Main/Components/Buy';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -30,6 +31,7 @@ ReactDOM.render(
                 <Route path="/main" component={Main} />
                 <Route path="/govtdashboard" component={GovtDashboard} />
                 <Route path="/companydashboard" component={CompanyDashboard} />
+                <Route path="/buythecrop" component = {Buy} />
                 <Route path="/" component={Intro} />
               </Switch>
     </BrowserRouter>
