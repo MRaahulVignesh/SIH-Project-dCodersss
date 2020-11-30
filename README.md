@@ -1,4 +1,4 @@
-Offical Github of dCodersss
+## Agromart - an intelligent decentralised market platform for agro-products
 
 Code for different modules is present in the below mentioned branches:
 
